@@ -167,9 +167,13 @@
                                         <span class="btn btn-default btn-file" id="up_prf">
                                             Upload Proof <input type="file" data-validation="required" class="form-control" placeholder="Upload image" name="image" id="image">
                                         </span>
-                                        <!-- <input type="file" class="form-control" placeholder="Upload image" name="image" id="image">-->
-                                        
+                                        <!-- <input type="file" class="form-control" placeholder="Upload image" name="image" id="image">-->                                        
                                     </div>
+                                    <div class="form-group">
+										<div class="checkbox">
+										  <label><input type="checkbox" name="is_active" value="1"> Confirm</label>
+										</div>
+                                    </div>									
                                     <div class="form-group">
                                     <img id="customer_proof_img" width="200">
                                     </div>

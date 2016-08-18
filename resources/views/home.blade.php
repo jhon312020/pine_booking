@@ -56,7 +56,23 @@
                         <tr>
                         <td><strong>Available Rooms : </strong></td>
                             @for($i=0; $i<$number_of_days; $i++)
-                            <td style='text-align:center;color: #337AB7'>
+								<?php $bookedroom = 0; ?>
+								@if(isset($orderbydate[date( "Y-m-d", strtotime("$room_availability_from +$i day"))]))
+									<?php $bookedroom = $orderbydate[date("Y-m-d", strtotime("$room_availability_from +$i day"))]; ?>
+								@endif
+								<?php $availableRooms = ((count($rooms) - $bookedroom) < 0)?0:count($rooms) - $bookedroom; ?>
+								@if($availableRooms)
+									<?php $available_room_style = 'text-align:center;color:white;background-color:green;'; ?>
+								@else
+									<?php $available_room_style = 'text-align:center;color:white;background-color:red;'; ?>
+								@endif
+								<td style=' <?php echo $available_room_style; ?>'>
+								<strong>
+									{{ $availableRooms }}
+								</strong>
+								</td>
+
+                            <!--td style='text-align:center;color: #337AB7'>
                             <strong>
                                 @foreach($orderbydate as $key => $bookedroom)
                                     @if(date( "d-m-Y", strtotime("$room_availability_from +$i day" )) == date( "d-m-Y", strtotime("$key" )))
@@ -70,7 +86,7 @@
                                     {{ count($rooms) }}
                                 @endif
                             </strong>
-                            </td>
+                            </td-->
                         @endfor
                         </tr>
                     </tbody>

@@ -15,7 +15,34 @@
             <div class="pull-left">
                 <h1>Booking List</h1>
             </div>
-            <div class="pull-right" style="margin-top:20px;"><a href="{{url('/reservation/add')}}" class="btn btn-primary"></i> Add </a></div>
+            <div class="pull-right" style="display:table; margin-top:25px;">
+                <form role="form" method="POST">
+                {!! csrf_field() !!}
+                <div class="form-group col-lg-5 pull-right">
+                    <div class='input-group date datetimepicker'>
+                        <span class="input-group-addon">
+                            To
+                        </span>
+                        <input type="text" class="form-control" name="to_date" placeholder="dd-mm-yyyy" value="{{ $reservation_date_to }}">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <button type="submit" class="btn btn-primary pull-right btn-l-margin"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+                 <div class="form-group col-lg-5 pull-right">
+                    <div class='input-group date datetimepicker'>
+                         <span class="input-group-addon">
+                            From
+                        </span>
+                        <input type="text" class="form-control" name="from_date" placeholder="dd-mm-yyyy" value="{{ $reservation_date_from }}">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+                </form>
+            </div>            
             <div class="clearfix"></div>
         </div>
     </div>
@@ -26,6 +53,11 @@
     </div>
         <!-- /.col-lg-12 -->
          <!-- /.row -->
+		 	<div class="row">
+                <div class="col-lg-12">
+                <div class="pull-right" style="margin-right:15px;"><a href="{{url('/reservation/add')}}" class="btn btn-primary"></i> Add </a></div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="flash-message">
@@ -58,7 +90,13 @@
                 <tbody>
                     @if (count($reservations) > 0)
                         @foreach ($reservations as $reservation)
-                            <tr>
+							@if ($reservation->cancel == 1)
+								<tr style="background-color:#F2DEDE !important;">
+							@elseif ($reservation->completed == 1)
+								<tr style="background-color:#DFF0D8 !important;">
+							@else
+								<tr>
+							@endif
                                 <!-- reservation Name -->
                                 <td class="table-text clickable-row" data-href="{{ url('reservation/advance/'.$reservation->id) }}">
                                     <div>{{ $reservation->customer->first_name." ".$reservation->customer->last_name }}</div>
@@ -86,24 +124,28 @@
                                 </td>
                                 <!-- Delete Button -->
                                 <td width="200">
-                                @if($reservation->completed == 0) 
-                                    @if(date('Y-m-d') < date('Y-m-d', strtotime($reservation->checkin)) )
-                                        <form action="{{ url('reservation/delete/'.$reservation->id) }}" method="POST">
-                                            {!! csrf_field() !!}
-                                            {!! method_field('DELETE') !!}
-                                            <button type="submit" class="btn btn-danger" name="delete" style="margin-left:10px;">
-                                                <i class="fa fa-trash"></i> Cancel
-                                            </button>
-                                        </form>
-                                    @endif
-                                    @if($reservation->is_active == 0)
-                                        <a href="{{url('/reservation/confirm/'.$reservation->id)}}" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Confirm</a>
-                                    @else
-                                        <a href="{{url('/reservation/advance/'.$reservation->id)}}" class="btn btn-warning">Check Out</a>
-                                    @endif
-                                @else
-                                <div class="btn btn-success">Completed</div>
-                                @endif
+								@if($reservation->cancel == 0)
+									@if($reservation->completed == 0) 
+										@if(date('Y-m-d') < date('Y-m-d', strtotime($reservation->checkin)) )
+											<form action="{{ url('reservation/delete/'.$reservation->id) }}" method="POST">
+												{!! csrf_field() !!}
+												{!! method_field('DELETE') !!}
+												<button type="submit" class="btn btn-danger" name="delete" style="margin-left:10px;">
+													<i class="fa fa-trash"></i> Cancel
+												</button>
+											</form>
+										@endif
+										@if($reservation->is_active == 0)
+											<a href="{{url('/reservation/confirm/'.$reservation->id)}}" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Confirm</a>
+										@else
+											<a href="{{url('/reservation/advance/'.$reservation->id)}}" class="btn btn-warning">Check Out</a>
+										@endif
+									@else
+									<div class="btn btn-success">Completed</div>
+									@endif
+								@else
+									<div class="btn btn-danger">Cancelled</div>
+								@endif
                            
                                 </td>
                             </tr>
@@ -157,21 +199,21 @@
                      {
                         extend: 'print',
                          exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
                         },
                         title: 'Booking List'
                     },
                     {
                         extend: 'excel',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
                         },
                         title: 'Booking List'
                     },
                     {
                         extend: 'pdf',
                         exportOptions: {
-                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+                            columns: [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
                         },
                         title: 'Booking List'
                     },

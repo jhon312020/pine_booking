@@ -21,10 +21,20 @@ class ReservationController extends Controller
 //        $this->role = \Auth::user()->role;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $reservations = Reservation::where('cancel','!=',1)->orderBy('created_at','DESC')->get();
-        return view("reservation/index",["reservations"=>$reservations]);
+		if ($request->isMethod('post')) {
+            $reservation_date_from = date('Y-m-d', strtotime($request->from_date));
+            $reservation_date_to = date('Y-m-d', strtotime($request->to_date));
+        } else {
+            $reservation_date_from = $reservation_date_to = date('Y-m-d');
+        }
+        $reservations = Reservation::whereBetween('checkin',[$reservation_date_from, $reservation_date_to])->orderBy('created_at','DESC')->get();
+        return view("reservation/index",[
+				"reservations"=>$reservations,
+				"reservation_date_from"=>date('d-m-Y', strtotime($reservation_date_from)),
+				"reservation_date_to"=>date('d-m-Y', strtotime($reservation_date_to))
+				]);
     }
 
     public function advance($id, Request $request)
@@ -107,7 +117,7 @@ class ReservationController extends Controller
                 $customer_id = Customer::insertGetId(['first_name' => $request->first_name, 'last_name' => $request->last_name, 'phone' => $request->phone, 'email' => $request->email, 'image'=> $name, 'address'=> $request->address ]);
             }
             $reservation_id = Reservation::insertGetId([
-                    'total_price' => $request->total_price, 'advance' =>$request->advance, 'rent'=>$request->rent,'booked_rooms' => $request->booked_rooms, 'checkin' => date('Y-m-d', strtotime($request->checkin)), 'checkout' => date('Y-m-d', strtotime($request->checkout)), 'customer_id' => $customer_id, 'reference' => $request->reference
+                    'total_price' => $request->total_price, 'advance' =>$request->advance, 'rent'=>$request->rent,'booked_rooms' => $request->booked_rooms, 'checkin' => date('Y-m-d', strtotime($request->checkin)), 'checkout' => date('Y-m-d', strtotime($request->checkout)), 'customer_id' => $customer_id, 'reference' => $request->reference, 'is_active' => (!is_null($request->is_active))? $request->is_active:0
                     ]); 
 
             $dateDiff = abs(strtotime($request->checkout."-1 days") - strtotime($request->checkin));
@@ -137,6 +147,7 @@ class ReservationController extends Controller
     public function completed(Request $request)
     {
        Reservation::where('id',$request->id)->update(array('completed' => 1 ));
+	   ReservationNight::where('day','>=',date('Y-m-d'))->where('reservation_id',$request->id)->delete();
         Session::flash('flash_message_completed', 'Check out completed successfully!');
         return redirect('/reservation/index');
     }
@@ -198,7 +209,7 @@ class ReservationController extends Controller
     public function delete($id)
     {
         Reservation::where('id',$id)->update(array('cancel' => 1 ));
-        ReservationNight::where('reservation_id',$id)->update(array('is_active' => 1 ));
+        ReservationNight::where('reservation_id',$id)->delete();
         Session::flash('flash_message_cancel', 'Booking cancelled successfully!');
         return redirect('/reservation/index');
     }
@@ -254,12 +265,12 @@ class ReservationController extends Controller
     public function check_available_rooms(Request $request) {
         $queries = array();
         $maxofdate = array();
-        $orderbydate = ReservationNight::selectRaw('day, sum(booked_rooms) as sum')->groupBy('day')->whereBetween('day',array(date('Y-m-d', strtotime($request->checkin)), date('Y-m-d',strtotime($request->checkout."-1 days"))))->where('is_active',0)->lists('sum', 'day');
+        $orderbydate = ReservationNight::selectRaw('day, sum(booked_rooms) as sum')->groupBy('day')->whereBetween('day',array(date('Y-m-d', strtotime($request->checkin)), date('Y-m-d',strtotime($request->checkout."-1 days"))))->lists('sum', 'day');
         foreach($orderbydate as $myorder) {
             $maxofdate[] = $myorder;
         }
         if(count($maxofdate)>0) {
-            $queries = max($maxofdate);
+            $queries = min($maxofdate);
         } else {
             $queries = 0;
         }

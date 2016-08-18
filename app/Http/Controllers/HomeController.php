@@ -43,9 +43,11 @@ class HomeController extends Controller
     {
         if ($request->isMethod('post')) {
             $room_availability_from = date('Y-m-d', strtotime($request->room_availability_from));
+			$room_availability_to = date('Y-m-d', strtotime($room_availability_from .' +14 days'));
 			$month_lead = date("n", strtotime($request->month));
         } else {
             $room_availability_from= date('Y-m-d');
+			$room_availability_to = date('Y-m-d', strtotime($room_availability_from .' +14 days'));			
 			$month_lead = date("n");
         }
         
@@ -92,8 +94,7 @@ class HomeController extends Controller
             $no_of_reserved_days[$reserved_room->room_type_id][] = date('Y-m-d', strtotime($reserved_room->day));
         }
         $rooms = Room::where('is_disabled', 0)->get();
-        $orderbydate = ReservationNight::selectRaw('day, sum(booked_rooms) as sum')->groupBy('day')->having('day', '>=', $room_availability_from)->where('is_active', 0)->lists('sum', 'day');
-		
+		$orderbydate = ReservationNight::selectRaw('day, sum(booked_rooms) as sum')->groupBy('day')->where('day', '>=', $room_availability_from)->where('day', '<=', $room_availability_to)->where('is_active', 0)->lists('sum', 'day');
         $expenses_grap_data = json_encode($expenses_data_for_month);
         return view('home', [
         
