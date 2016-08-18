@@ -446,6 +446,26 @@ class ExpenseController extends Controller
             case 'salary/list':
                 $exp_category = 'salary';
             break;
+            case 'bank/add':
+            case 'bank/list':
+                $exp_category = 'bank';
+            break;
+            case 'owner/add':
+            case 'owner/list':
+                $exp_category = 'owner';
+            break;
+            case 'advertisment/add':
+            case 'advertisment/list':
+                $exp_category = 'advertisment';
+            break;
+            case 'commission/add':
+            case 'commission/list':
+                $exp_category = 'commission';
+            break;
+            case 'tax/add':
+            case 'tax/list':
+                $exp_category = 'tax';
+            break;
             default:
                 $exp_category = 'others';
         }
