@@ -133,8 +133,7 @@ class ReservationController extends Controller
             }
             
             Session::flash('alert-success', 'success');
-            $reservations = Reservation::where('cancel','!=',1)->orderBy('created_at','DESC')->get();
-        return view("reservation/index",["reservations"=>$reservations]);
+            return redirect('/reservation/index');
         } 
         $total_available_rooms = Room::where('is_disabled', 0)->get();
         return view("reservation/add",["customers" =>$customers, "total_available_rooms" => $total_available_rooms]);
