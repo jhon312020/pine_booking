@@ -110,13 +110,13 @@
                                 {!! csrf_field() !!}
                                 <div class="col-lg-6">
                                     <div class="form-group input-group" id="datetimepicker1">
-                                        <input type="text" class="form-control" name="checkin" placeholder="Check In Date : dd-mm-yyyy" id="checkin">
+                                        <input type="text" class="form-control" name="checkin" placeholder="Check In Date : dd-mm-yyyy" id="checkin" value="{{$today}}">
                                         <span class="input-group-addon">
                                             <span class="glyphicon glyphicon-calendar"></span>
                                         </span>
                                     </div>
                                     <div class="form-group input-group" id="datetimepicker2">
-                                        <input type="text" class="form-control" id="checkout" name="checkout" placeholder="Check Out Date : dd-mm-yyyy">
+                                        <input type="text" class="form-control" id="checkout" name="checkout" placeholder="Check Out Date : dd-mm-yyyy" value="{{$tomorrow}}">
                                         <span class="input-group-addon">
                                             <span class="glyphicon glyphicon-calendar"></span>
                                         </span>
@@ -170,10 +170,10 @@
                                         <!-- <input type="file" class="form-control" placeholder="Upload image" name="image" id="image">-->                                        
                                     </div>
                                     <div class="form-group">
-										<div class="checkbox">
-										  <label><input type="checkbox" name="is_active" value="1"> Confirm</label>
-										</div>
-                                    </div>									
+                                        <div class="checkbox">
+                                          <label><input type="checkbox" name="is_active" value="1"> Confirm</label>
+                                        </div>
+                                    </div>                                  
                                     <div class="form-group">
                                     <img id="customer_proof_img" width="200">
                                     </div>
@@ -195,7 +195,6 @@
     </div>
 </div>
 <!-- /#page-wrapper -->
-
 @endsection
 @section('load_js')
     @parent
@@ -249,13 +248,8 @@
                 $('#email').val("");
                 $('#address').val("");
             });
-            
-            var date = new Date();
-            var today = new Date(<?php echo date('Y'); ?>, <?php echo date('m'); ?>, <?php echo date('d'); ?>);
-            var date2 = new Date(<?php echo date('Y'); ?>, <?php echo date('m'); ?>, <?php echo date('d'); ?>);
-            var tomorrow = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate()+1);
-
-            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: new  Date('{{date("Y-m-d")}}') });
+            // Datetimepicker has issues on setting the minDate https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1302
+            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: moment().millisecond(0).second(0).minute(0).hour(0) });
             $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY', minDate:new  Date('{{date("Y-m-d", strtotime("+1 day"))}}')});
             $("#datetimepicker1").on("dp.change", function (e) {
                 var newdate = new Date(e.date);
@@ -265,9 +259,6 @@
                 check_available_rooms($('#checkin').val(), $('#checkout').val());
         
             });
-        
-            $('#checkin').val(today.getDate()+'-'+(today.getMonth())+'-'+today.getFullYear());
-            $('#checkout').val(tomorrow.getDate()+'-'+(tomorrow.getMonth())+'-'+tomorrow.getFullYear());
             $('#datetimepicker2').on("dp.change", function(e){
                 calculate_total_price();
                 check_available_rooms($('#checkin').val(), $('#checkout').val());

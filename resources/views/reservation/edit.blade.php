@@ -240,9 +240,9 @@
             var tomorrow = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate()+1);
             var disabledat = "";
             
-            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', defaultDate: new  Date('{{date("Y-m-d", strtotime($reservation->checkin))}}'), disabledDates:[@foreach($mydates as $mykey => $mydate)  @if($mykey>0) '{{date("Y-m-d", strtotime($mydate))}}', @endif @endforeach ] });
-            $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY', defaultDate:new  Date('{{date("Y-m-d", strtotime("+1 day"))}}'), disabledDates:[@foreach($mydates as $mydate) '{{date("Y-m-d", strtotime($mydate))}}',  @endforeach ]});
-
+            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: moment().millisecond(0).second(0).minute(0).hour(0) });
+            $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY',minDate:new  Date('{{date("Y-m-d", strtotime({{minDateTo}}))}}')});
+            
             $("#datetimepicker1").on("dp.change", function (e) {
                 var newdate = new Date(e.date);
                 newdate.setDate(newdate.getDate() + 1);

@@ -375,11 +375,12 @@
                 $('#total_sum').html(total_sum);
                 $('#total_bal').html(total_balance);
             }
-            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', defaultDate: new  Date('{{date("Y-m-d", strtotime($reservation->checkin))}}'), disabledDates:[@foreach($mydates as $mykey => $mydate)  @if($mykey>0) '{{date("Y-m-d", strtotime($mydate))}}', @endif @endforeach ] });
-            $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY', defaultDate:new  Date('{{date("Y-m-d", strtotime("+1 day"))}}'), disabledDates:[@foreach($mydates as $mydate) '{{date("Y-m-d", strtotime($mydate))}}',  @endforeach ]});
+            
+            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: moment().millisecond(0).second(0).minute(0).hour(0) });
+            $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY',minDate:new  Date('{{date("Y-m-d 00:00:00", strtotime($minDateTo ))}}')});
 
             $("#datetimepicker1").on("dp.change", function (e) {
-                 var newdate = new Date(e.date);
+                var newdate = new Date(e.date);
                 newdate.setDate(newdate.getDate() + 1);
                 $('#datetimepicker2').data("DateTimePicker").minDate(newdate);
                 calculate_total_price();

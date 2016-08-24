@@ -1,5 +1,4 @@
 <?php
- 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
@@ -23,25 +22,26 @@ class ReservationController extends Controller
 
     public function index(Request $request)
     {
-		if ($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             $reservation_date_from = date('Y-m-d', strtotime($request->from_date));
             $reservation_date_to = date('Y-m-d', strtotime($request->to_date));
         } else {
-            $reservation_date_from = $reservation_date_to = date('Y-m-d');
+            $reservation_date_from = date('Y-m-d');
+            $reservation_date_to = date('Y-m-t');
         }
         $reservations = Reservation::whereBetween('checkin',[$reservation_date_from, $reservation_date_to])->orderBy('created_at','DESC')->get();
         return view("reservation/index",[
-				"reservations"=>$reservations,
-				"reservation_date_from"=>date('d-m-Y', strtotime($reservation_date_from)),
-				"reservation_date_to"=>date('d-m-Y', strtotime($reservation_date_to))
-				]);
+                "reservations"=>$reservations,
+                "reservation_date_from"=>date('d-m-Y', strtotime($reservation_date_from)),
+                "reservation_date_to"=>date('d-m-Y', strtotime($reservation_date_to))
+                ]);
     }
 
     public function advance($id, Request $request)
     {
-    	if ($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             if($request->checkmyform == 'mypayment') {
-    		ReservationAdvance::insert(['paid' =>$request->paid, 'reservation_id'=>$id,'mode_of_payment'=>$request->mode_of_payment, 'category'=>$request->category, 'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>date('Y-m-d', strtotime($request->updated_at))]);
+            ReservationAdvance::insert(['paid' =>$request->paid, 'reservation_id'=>$id,'mode_of_payment'=>$request->mode_of_payment, 'category'=>$request->category, 'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>date('Y-m-d', strtotime($request->updated_at))]);
             Session::flash('alert-info', 'info');
             } else {
                 $this->validate($request, [
@@ -81,17 +81,18 @@ class ReservationController extends Controller
                 Session::flash('alert-success', 'success');
             }
 
-    	}
+        }
         $reservation = Reservation::find($request->id);
-    	$reservation_advances = ReservationAdvance::where('reservation_id',$id)->get();
-    	$total_paid = ReservationAdvance::where('reservation_id',$id)->sum('paid');
+        $reservation_advances = ReservationAdvance::where('reservation_id',$id)->get();
+        $total_paid = ReservationAdvance::where('reservation_id',$id)->sum('paid');
         $total_available_rooms = Room::where('is_disabled', 0)->get();
-        return view("reservation/advance",["reservation"=>$reservation, "reservation_advances"=>$reservation_advances, 'total_paid'=> $total_paid, 'total_available_rooms' => $total_available_rooms]);
+        $minDateTo = date('Y-m-d', strtotime($reservation->checkin . ' +1 day'));
+        return view("reservation/advance",["reservation"=>$reservation, "reservation_advances"=>$reservation_advances, 'total_paid'=> $total_paid, 'total_available_rooms' => $total_available_rooms, 'minDateTo'=>$minDateTo]);
     }
     
     public function add(Request $request)
     {
-    	$customers = ['' => 'Select Customer'] + Customer::lists("first_name","id")->all();
+        $customers = ['' => 'Select Customer'] + Customer::lists("first_name","id")->all();
         if ($request->isMethod('post')) {
             $this->validate($request, [
                 'checkin' => 'required',
@@ -127,16 +128,17 @@ class ReservationController extends Controller
                 ReservationNight::insert(['day' => date('Y-m-d', strtotime($request->checkin."+ $i days")), 'booked_rooms' => $request->booked_rooms, 'reservation_id'=>$reservation_id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>Carbon::now()->toDateTimeString()]);
             }
             if ($request->has('advance')) {
-            	if($request->advance > 0) {
-					ReservationAdvance::insert(['paid' =>$request->advance, 'category' =>'Advance', 'mode_of_payment'=>'Cash', 'reservation_id'=>$reservation_id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>Carbon::now()->toDateTimeString()]);
-            	}
+                if($request->advance > 0) {
+                    ReservationAdvance::insert(['paid' =>$request->advance, 'category' =>'Advance', 'mode_of_payment'=>'Cash', 'reservation_id'=>$reservation_id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>Carbon::now()->toDateTimeString()]);
+                }
             }
-            
             Session::flash('alert-success', 'success');
             return redirect('/reservation/index');
         } 
         $total_available_rooms = Room::where('is_disabled', 0)->get();
-        return view("reservation/add",["customers" =>$customers, "total_available_rooms" => $total_available_rooms]);
+        $today = date('d-m-Y');
+        $tomorrow = date("d-m-y", strtotime("+1 day"));
+        return view("reservation/add",["customers" =>$customers, "total_available_rooms" => $total_available_rooms, 'today'=>$today, 'tomorrow'=>$tomorrow]);
 
     }
     public function view_detail(Request $request) {
@@ -146,7 +148,7 @@ class ReservationController extends Controller
     public function completed(Request $request)
     {
        Reservation::where('id',$request->id)->update(array('completed' => 1 ));
-	   ReservationNight::where('day','>=',date('Y-m-d'))->where('reservation_id',$request->id)->delete();
+       ReservationNight::where('day','>=',date('Y-m-d'))->where('reservation_id',$request->id)->delete();
         Session::flash('flash_message_completed', 'Check out completed successfully!');
         return redirect('/reservation/index');
     }
