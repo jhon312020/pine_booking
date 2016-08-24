@@ -1,13 +1,13 @@
 <?php
-	$url = url()->current();
-	$split = explode('/public/', $url);
-	$action = array('add', 'edit');
-	$controller = false;
-	if(isset($split[1])) {
-		$controller = true;
-		$split1 = explode('/', $split[1]);
-	}
-	
+    $url = url()->current();
+    $split = explode('/public/', $url);
+    $action = array('add', 'edit');
+    $controller = false;
+    if(isset($split[1])) {
+        $controller = true;
+        $split1 = explode('/', $split[1]);
+    }
+    
 ?>
 <div class="navbar-default sidebar" role="navigation">
     <div class="sidebar-nav navbar-collapse">
@@ -24,7 +24,7 @@
             <li>
                 <a class="{{ ($controller && $split1[0] == 'customer' && ((isset($split1[1])) && in_array($split1[1], $action)))?'active':'' }}" href="{{url('/customer/list')}}"><i class="fa fa-list fa-fw"></i> Customers</span></a>
             </li>
-			<li>
+            <li>
                 <a  href="{{url('income')}}"><i class="fa fa-list fa-fw"></i> Incomes</span></a>
             </li>
             <li>
@@ -42,7 +42,7 @@
                     <li>
                         <a href="{{url('/reports/currentyear')}}">Current Year</a>
                     </li>
-					<li>
+                    <li>
                         <a href="{{url('/reports/income')}}">Income/Expense</a>
                     </li>
                 </ul>
@@ -50,8 +50,3 @@
         </ul>
     </div>
 </div>
-<script>
-$(document).ready(function(){
-	
-})
-</script>
