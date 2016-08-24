@@ -1,5 +1,5 @@
 <?php	
-
+//ALTER TABLE `employee_payments`  ADD `notes` VARCHAR(255) NULL DEFAULT NULL  AFTER `amount`;
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
@@ -59,19 +59,23 @@ class EmployeeController extends Controller
 					if($salary == 0) {
 					 $paid_amount = Employee::select(DB::raw('(employees.salary - ifnull((select sum(employee_payments.amount) as paid from employee_payments where employee_payments.employee_id = employees.id and employee_payments.category = "advance" and MONTH(employee_payments.updated_at) = "'.$month.'"), 0)) as balance'))
 						->where('employees.id', $id)->first()->balance;
-						if($paid_amount == 0)
+						if($paid_amount == 0) {
 							$v->errors()->add('paid', 'There is no pending payments');
-						else
-							$request->paid = $paid_amount;
+						}
+						else {
+							if($request->paid > $paid_amount)
+								$request->paid = $paid_amount;
+						}
 					}
 				}
 				$v = Validator::make($request->all(), $rule);
 			
 				$v->after(function($v) use($id, $request) {
 					$month = Date('m', strtotime($request->updated_at));
+					$sal_month = Date('m', strtotime('-1 month', strtotime($request->updated_at)));
 					$salary = EmployeePayment::select('paid')
 								->where('category', DB::raw("'salary'"))
-								->whereRaw('MONTH(updated_at) = "'.$month.'"')
+								->whereRaw('MONTH(updated_at) = "'.$sal_month.'"')
 								->where('employee_id', $id)->count();
 					if($request->category == 'advance') {
 						$advance = Employee::select(DB::raw('(employees.salary - ifnull((select sum(employee_payments.amount) as paid from employee_payments where employee_payments.employee_id = employees.id and employee_payments.category = "advance" and MONTH(employee_payments.updated_at) = "'.$month.'"), 0)) as balance'), 'employees.salary')
@@ -106,14 +110,13 @@ class EmployeeController extends Controller
                 $mymonth      = $date[0];
                 $myyear     = $date[1];
             } else {
-                EmployeePayment::insert(['amount' =>$request->paid, 'category'=>$request->category,'employee_id'=>$id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>date('Y-m-d', strtotime('-1 month', strtotime($request->updated_at)))]);
+                EmployeePayment::insert(['amount' =>$request->paid, 'category'=>$request->category,'employee_id'=>$id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>date('Y-m-d', strtotime($request->updated_at)), 'notes' =>$request->notes ]);
                 Session::flash('alert-success', 'success');
             }
         }
-
-        $employees = Employee::where('id',$id)->get();
-        $employee_payments = EmployeePayment::where('employee_id',$id)->whereMonth('updated_at','=',$mymonth)->whereYear('updated_at','=',$myyear)->orderBy('updated_at', 'DESC')->get();
-        $total_advance_paid = EmployeePayment::where('employee_id',$id)->whereMonth('updated_at','=',$mymonth)->whereYear('updated_at','=',$myyear)->where('category',$category)->sum('amount');
+		$employees = Employee::where('id',$id)->get();
+        $employee_payments = EmployeePayment::where('employee_id',$id)->whereMonth('updated_at','=',$mymonth)->whereYear('updated_at','=',$myyear)->where('category','advance')->orderBy('updated_at', 'DESC')->get();
+		$total_advance_paid = EmployeePayment::where('employee_id',$id)->whereMonth('updated_at','=',$mymonth)->whereYear('updated_at','=',$myyear)->where('category','advance')->sum('amount');
         return view("employees/pay",["employees"=>$employees, "employee_payments"=>$employee_payments, 'total_advance_paid'=> $total_advance_paid, 'category' => $category]);
     }
 	/**

@@ -50,6 +50,9 @@
                                 <div class="form-group">
                                     <input type="text" class="form-control" data-validation="required" placeholder="Pay amount" name="paid" id="paid">
                                 </div>
+								<div class="form-group">
+                                    <input type="text" class="form-control" placeholder="Notes" name="notes" id="notes">
+                                </div>
                                 <button type="reset" class="btn btn-danger pull-right btn-l-margin">Cancel</button>
                                 <button type="submit" class="btn btn-primary pull-right">Add</button>
                             </form>
@@ -108,14 +111,14 @@
                     <!-- Table Headings -->
                     <thead>
                         <th>Date</th>
-                        <th>Advances</th>
+                        <th>Amount</th>
+						<th>Category</th>
                     </thead>
                     <!-- Table Body -->
                     <tbody>
                         @if (count($employee_payments) > 0)
                             @foreach ($employee_payments as $payment)
-                                @if($payment->category == 'advance')
-                                    <tr>
+								    <tr>
                                         <!-- room Name -->
                                         <td class="table-text">
                                             <div>{{ date('d-m-Y', strtotime($payment->updated_at)) }}</div>
@@ -123,8 +126,10 @@
                                         <td class="table-text">
                                             <div>{{ number_format($payment->amount, 2) }}</div>
                                         </td>
+										<td class="table-text">
+                                            <div>{{ ucfirst($payment->category) }}</div>
+                                        </td>
                                     </tr>
-                                @endif
                             @endforeach
                         @endif
                     </tbody>
@@ -198,7 +203,7 @@
 					success:function(data, textStatus, jqXHR) {
 						ele.closest('.form-group').find('.help-block').remove();
 						if(data['balance']) {
-							$('#paid').prop('disabled', true).val(data['balance']);	
+							$('#paid').val(data['balance']);	
 						} else {
 							ele.after('<span class="help-block form-error">There is no pending payment for this employee</span>')		
 						}
@@ -208,7 +213,7 @@
 					}
 				});	
 			} else {
-				$('#paid').prop('disabled', false).val('');
+				$('#paid').val('');
 			}
 		})
     </script>
