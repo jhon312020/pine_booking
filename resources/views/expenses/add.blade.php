@@ -156,7 +156,7 @@
             var mindate = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
             var maxdate = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate()+2);
 
-            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: new Date('{{Date("Y-m-d", strtotime("-2 days"))}}'), maxDate:new Date('{{Date("Y-m-d", strtotime("+2 days"))}}')  });
+            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: new Date('{{date("m/d/Y", strtotime("-2 days"))}}'), maxDate:new Date('{{date("m/d/Y", strtotime("+2 days"))}}')  });
 
             $('#side-menu').metisMenu();
         });
