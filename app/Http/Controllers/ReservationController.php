@@ -138,7 +138,18 @@ class ReservationController extends Controller
         $total_available_rooms = Room::where('is_disabled', 0)->get();
         $today = date('d-m-Y');
         $tomorrow = date("d-m-y", strtotime("+1 day"));
-        return view("reservation/add",["customers" =>$customers, "total_available_rooms" => $total_available_rooms, 'today'=>$today, 'tomorrow'=>$tomorrow]);
+        $queries = array();
+        $maxofdate = array();
+        $orderbydate = ReservationNight::selectRaw('day, sum(booked_rooms) as sum')->groupBy('day')->whereBetween('day',array(date('Y-m-d'), date('Y-m-d',strtotime("+1 day"))))->lists('sum', 'day');
+        foreach($orderbydate as $myorder) {
+            $maxofdate[] = $myorder;
+        }
+        if(count($maxofdate)>0) {
+            $queries = min($maxofdate);
+        } else {
+            $queries = 0;
+        }
+        return view("reservation/add",["customers" =>$customers, "total_available_rooms" => $total_available_rooms, 'today'=>$today, 'tomorrow'=>$tomorrow, 'queries' => $queries]);
 
     }
     public function view_detail(Request $request) {

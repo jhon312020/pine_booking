@@ -122,7 +122,7 @@
                                         </span>
                                     </div>
                                     <div class="form-group">
-                                        <span class="label label-danger">Total available rooms : <span id="avl_rms"></span></span>
+                                        <span class="label label-danger">Total available rooms : <span id="avl_rms">{{ (count($total_available_rooms) - $queries) }}</span></span>
                                         <input type="number" class="form-control" placeholder="Booking Rooms" name="booked_rooms" data-validation="required" id="booked_rooms">
                                     </div>
                                     <!-- <div class="form-group">
@@ -325,7 +325,7 @@
             $( "#booked_rooms" ).blur(function() {
                 calculate_total_price();
             });
-            check_available_rooms($('#checkin').val(), $('#checkout').val());
+            //check_available_rooms($('#checkin').val(), $('#checkout').val());
         });
     </script>
     <script type="text/javascript">
