@@ -102,7 +102,6 @@ class HomeController extends Controller
         //~ echo '</pre>';
         $expenses_grap_data = json_encode($expenses_data_for_month);
         return view('home', [
-        
             'expenses_grap_data' => $expenses_grap_data,
             'total_expense_of_month' => $total_expense_of_month,
             'total_income_of_month' => $total_income_of_month,

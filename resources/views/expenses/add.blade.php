@@ -64,7 +64,7 @@
                                 </div>
                                 <div class="form-group input-group">
                                     <span class="input-group-addon"><i class="fa fa-inr"></i></span>
-                                    <input type="number" class="form-control" name="amount">
+                                    <input type="number" class="form-control" name="amount" min="1" id='amount'>
                                     <span class="input-group-addon">.00</span>
                                 </div>
                                 <div class="form-group">
@@ -152,6 +152,11 @@
                 
             });
             $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: new Date('{{date("m/d/Y", strtotime("-2 days"))}}'), maxDate:new Date('{{date("m/d/Y", strtotime("+2 days"))}}')  });
+            $("#amount").bind('keyup mouseup', function() {
+                if(isNaN($(this).val()) || $(this).val() <= 0) {
+                    $(this).val('');
+                }
+            });
 
             $('#side-menu').metisMenu();
         });
