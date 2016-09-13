@@ -75,8 +75,10 @@
                                         <input type="hidden" id="phone" data-validation="required" class="form-control" placeholder="Phone" name="phone" value="{{$reservation->customer->phone}}">
                                     </div>
                                     <div class="clearfix"></div>
+                                    @if($reservation->cancel != 1) 
                                     <button type="reset" class="btn btn-danger pull-right btn-l-margin">Cancel</button>
                                     <button type="submit" class="btn btn-primary pull-right">Update</button>
+                                    @endif
                                 </form>
                                 </div>
                                 <div class="col-lg-6">
@@ -114,9 +116,11 @@
                                             </td>
                                         </tr>
                                     </table>                    
+                            @if($reservation->cancel != 1) 
                             <button class="btn btn-primary btn-lg pull-right" name="payment" style="margin-left:10px;">
                                 <i class="fa fa-inr"></i> Payment
                             </button>
+                            @endif
                                     
                                 </div>
                         </div>
@@ -166,6 +170,7 @@
             </div>
         </div>
     </div>
+    @if($reservation->cancel != 1) 
     <div class="row">
         <div class="col-lg-12">
             <div class="col-lg-12 bg-success" style="padding:20px;">
@@ -175,7 +180,7 @@
                             {!! csrf_field() !!}
                             {!! method_field('DELETE') !!}
                             <button type="submit" class="btn btn-danger btn-lg pull-right" name="delete" style="margin-left:10px;">
-                                <i class="fa fa-trash"></i> Cancel
+                                <i class="fa fa-trash"></i> Cancel 
                             </button>
                         </form>
                     @endif
@@ -197,6 +202,7 @@
             </div>
         </div>
     </div>
+    @endif
         <!-- /.col-lg-12 -->
          <!-- /.row -->
             <div class="row">

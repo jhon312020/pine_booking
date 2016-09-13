@@ -47,14 +47,14 @@
                                         <option value="Others">Others</option>
                                     </select>
                                 </div>
-								
+                                
                                 <div class="form-group">
                                     <input type="text" class="form-control" placeholder="Expense Name" name="name" id="expense_name">
-									<select name="name" class="form-control hide" id="food_category" disabled>
-									@foreach($food_category as $key=>$value)
-									<option value="{{$key}}">{{$value}}</option>
-									@endforeach
-									</select>
+                                    <select name="name" class="form-control hide" id="food_category" disabled>
+                                    @foreach($food_category as $key=>$value)
+                                    <option value="{{$key}}">{{$value}}</option>
+                                    @endforeach
+                                    </select>
                                 </div>
                                 <div class="form-group input-group" id="datetimepicker1">
                                     <input type="text" class="form-control" name="date_of_expense" placeholder="Date of Expense : dd-mm-yyyy">
@@ -140,22 +140,17 @@
     <script src="{{asset('datepicker/datetimepicker.js')}}"></script>
     <script type='text/javascript'>
         $(function() {
-			$('#category').bind('change', function() {
-				if($(this).val() == 'Food') {
-					$('#food_category').removeClass('hide').prop('disabled', false);
-					$('#expense_name').addClass('hide').prop('disabled', true);
-				}
-				else {
-					$('#food_category').addClass('hide').prop('disabled', true);
-					$('#expense_name').removeClass('hide').prop('disabled', false);
-				}
-				
-			});
-            var date2 = new Date(<?php echo date('Y'); ?>, <?php echo date('m'); ?>, <?php echo date('d'); ?>);
-            
-            var mindate = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
-            var maxdate = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate()+2);
-
+            $('#category').bind('change', function() {
+                if($(this).val() == 'Food') {
+                    $('#food_category').removeClass('hide').prop('disabled', false);
+                    $('#expense_name').addClass('hide').prop('disabled', true);
+                }
+                else {
+                    $('#food_category').addClass('hide').prop('disabled', true);
+                    $('#expense_name').removeClass('hide').prop('disabled', false);
+                }
+                
+            });
             $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: new Date('{{date("m/d/Y", strtotime("-2 days"))}}'), maxDate:new Date('{{date("m/d/Y", strtotime("+2 days"))}}')  });
 
             $('#side-menu').metisMenu();

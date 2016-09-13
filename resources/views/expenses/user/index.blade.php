@@ -14,7 +14,7 @@
             <div class="pull-right" style="display:table; margin-top:25px;">
                 <form role="form" method="POST" action="{{ url('expense/list') }}">
                 {!! csrf_field() !!}
-                <div class="form-group col-lg-5 pull-right">
+                <div class="form-group col-lg-3 pull-right">
                     <div class='input-group date datetimepicker'>
                         <span class="input-group-addon">
                             To
@@ -26,7 +26,7 @@
                         <button type="submit" class="btn btn-primary pull-right btn-l-margin"><i class="fa fa-search"></i></button>
                     </div>
                 </div>
-                 <div class="form-group col-lg-5 pull-right">
+                 <div class="form-group col-lg-3 pull-right">
                     <div class='input-group date datetimepicker'>
                          <span class="input-group-addon">
                             From
@@ -142,6 +142,14 @@
         $(function () {
             $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
             $('#expense_table').DataTable( {
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {"orderable": false },
+                ],
                 dom: 'Bfrtip',
                 buttons: [
                      {
@@ -149,21 +157,21 @@
                          exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Expenses'
+                        title: 'Expenses'
                     },
                     {
                         extend: 'excel',
                         exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Expenses'
+                        title: 'Expenses'
                     },
                     {
                         extend: 'pdf',
                         exportOptions: {
                             columns: [ 0, 1, 2,3 ,4]
                         },
-						title: 'Expenses'
+                        title: 'Expenses'
                     },
                     'colvis'
                 ]

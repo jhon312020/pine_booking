@@ -106,7 +106,7 @@
                             Book A Room
                         </div>
                         <div class="panel-body">
-                            <form role="form" method="POST" action="{{ url('reservation/add') }}" enctype="multipart/form-data">
+                            <form role="form" method="POST" action="{{ url('reservation/add') }}" enctype="multipart/form-data" autocomplete="false">
                                 {!! csrf_field() !!}
                                 <div class="col-lg-6">
                                     <div class="form-group input-group" id="datetimepicker1">
@@ -123,7 +123,7 @@
                                     </div>
                                     <div class="form-group">
                                         <span class="label label-danger">Total available rooms : <span id="avl_rms">{{ (count($total_available_rooms) - $queries) }}</span></span>
-                                        <input type="number" class="form-control" placeholder="Booking Rooms" name="booked_rooms" data-validation="required" id="booked_rooms">
+                                        <input type="number" class="form-control" placeholder="Booking Rooms" name="booked_rooms" data-validation="required" id="booked_rooms" min='1' autocomplete="false" value="">
                                     </div>
                                     <!-- <div class="form-group">
                                         <select name="room_type_id" class="form-control" id="room_type_id">
@@ -326,6 +326,11 @@
                 calculate_total_price();
             });
             //check_available_rooms($('#checkin').val(), $('#checkout').val());
+            $("#booked_rooms").bind('keyup mouseup', function() {
+                if(isNaN($(this).val()) || $(this).val() <= 0) {
+                    $(this).val('');
+                }
+            });
         });
     </script>
     <script type="text/javascript">

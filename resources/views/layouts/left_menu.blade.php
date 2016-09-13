@@ -1,7 +1,7 @@
 <?php
     $url = url()->current();
     $split = explode('/public/', $url);
-    $action = array('add', 'edit');
+    $action = array('add', 'edit', 'pay');
     $controller = false;
     if(isset($split[1])) {
         $controller = true;

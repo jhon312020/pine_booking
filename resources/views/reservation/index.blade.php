@@ -18,7 +18,7 @@
             <div class="pull-right" style="display:table; margin-top:25px;">
                 <form role="form" method="POST">
                 {!! csrf_field() !!}
-                <div class="form-group col-lg-5 pull-right">
+                <div class="form-group col-lg-3 pull-right">
                     <div class='input-group date datetimepicker'>
                         <span class="input-group-addon">
                             To
@@ -30,7 +30,7 @@
                         <button type="submit" class="btn btn-primary pull-right btn-l-margin"><i class="fa fa-search"></i></button>
                     </div>
                 </div>
-                 <div class="form-group col-lg-5 pull-right">
+                 <div class="form-group col-lg-3 pull-right">
                     <div class='input-group date datetimepicker'>
                          <span class="input-group-addon">
                             From
@@ -53,7 +53,7 @@
     </div>
         <!-- /.col-lg-12 -->
          <!-- /.row -->
-		 	<div class="row">
+            <div class="row">
                 <div class="col-lg-12">
                 <div class="pull-right" style="margin-right:15px;"><a href="{{url('/reservation/add')}}" class="btn btn-primary"></i> Add </a></div>
                 </div>
@@ -90,13 +90,13 @@
                 <tbody>
                     @if (count($reservations) > 0)
                         @foreach ($reservations as $reservation)
-							@if ($reservation->cancel == 1)
-								<tr style="background-color:#F2DEDE !important;">
-							@elseif ($reservation->completed == 1)
-								<tr style="background-color:#DFF0D8 !important;">
-							@else
-								<tr>
-							@endif
+                            @if ($reservation->cancel == 1)
+                                <tr style="background-color:#F2DEDE !important;">
+                            @elseif ($reservation->completed == 1)
+                                <tr style="background-color:#DFF0D8 !important;">
+                            @else
+                                <tr>
+                            @endif
                                 <!-- reservation Name -->
                                 <td class="table-text clickable-row" data-href="{{ url('reservation/advance/'.$reservation->id) }}">
                                     <div>{{ $reservation->customer->first_name." ".$reservation->customer->last_name }}</div>
@@ -124,28 +124,28 @@
                                 </td>
                                 <!-- Delete Button -->
                                 <td width="200">
-								@if($reservation->cancel == 0)
-									@if($reservation->completed == 0) 
-										@if(date('Y-m-d') < date('Y-m-d', strtotime($reservation->checkin)) )
-											<form action="{{ url('reservation/delete/'.$reservation->id) }}" method="POST">
-												{!! csrf_field() !!}
-												{!! method_field('DELETE') !!}
-												<button type="submit" class="btn btn-danger" name="delete" style="margin-left:10px;">
-													<i class="fa fa-trash"></i> Cancel
-												</button>
-											</form>
-										@endif
-										@if($reservation->is_active == 0)
-											<a href="{{url('/reservation/confirm/'.$reservation->id)}}" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Confirm</a>
-										@else
-											<a href="{{url('/reservation/advance/'.$reservation->id)}}" class="btn btn-warning">Check Out</a>
-										@endif
-									@else
-									<div class="btn btn-success">Completed</div>
-									@endif
-								@else
-									<div class="btn btn-danger">Cancelled</div>
-								@endif
+                                @if($reservation->cancel == 0)
+                                    @if($reservation->completed == 0) 
+                                        @if(date('Y-m-d') < date('Y-m-d', strtotime($reservation->checkin)) )
+                                            <form action="{{ url('reservation/delete/'.$reservation->id) }}" method="POST" style='display:inline;'>
+                                                {!! csrf_field() !!}
+                                                {!! method_field('DELETE') !!}
+                                                <button type="submit" class="btn btn-danger" name="delete" style="margin-left:10px;">
+                                                    <i class="fa fa-trash"></i> Cancel
+                                                </button>
+                                            </form>
+                                        @endif
+                                        @if($reservation->is_active == 0)
+                                            <a href="{{url('/reservation/confirm/'.$reservation->id)}}" class="btn btn-warning"><i class="fa fa-pencil-square-o"></i> Confirm</a>
+                                        @else
+                                            <a href="{{url('/reservation/advance/'.$reservation->id)}}" class="btn btn-warning">Check Out</a>
+                                        @endif
+                                    @else
+                                    <div class="btn btn-success">Completed</div>
+                                    @endif
+                                @else
+                                    <div class="btn btn-danger">Cancelled</div>
+                                @endif
                            
                                 </td>
                             </tr>

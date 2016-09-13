@@ -40,7 +40,7 @@
                     <th>Address</th>
                     <th>Phone</th>
                     <th>Email</th>
-					<th>&nbsp;</th>
+                    <th>&nbsp;</th>
                 </thead>
 
                 <!-- Table Body -->
@@ -65,9 +65,9 @@
                                 <td class="table-text">
                                     <div>{{ $customer->email }}</div>
                                 </td>
-								<td>
-								 <a href="{{url('/customer/edit/'.$customer->id)}}" class="btn btn-success" style="float:left; margin-right:10px;"><i class="fa fa-pencil-square-o"></i> Edit</a>
-                                    <form action="{{ url('customer/delete/'.$customer->id) }}" method="POST">
+                                <td>
+                                 <a href="{{url('/customer/edit/'.$customer->id)}}" class="btn btn-success" style="float:left; margin-right:10px;"><i class="fa fa-pencil-square-o"></i> Edit</a>
+                                    <form action="{{ url('customer/delete/'.$customer->id) }}" method="POST" style="display:inline">
                                         {!! csrf_field() !!}
                                         {!! method_field('DELETE') !!}
 
@@ -119,27 +119,35 @@
             $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
             $('#customer_table').DataTable( {
                 dom: 'Bfrtip',
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {"orderable": false },
+                ],
                 buttons: [
                      {
                         extend: 'print',
                          exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Customers'
+                        title: 'Customers'
                     },
                     {
                         extend: 'excel',
                         exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Customers'
+                        title: 'Customers'
                     },
                     {
                         extend: 'pdf',
                         exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Customers'
+                        title: 'Customers'
                     },
                     'colvis'
                 ]

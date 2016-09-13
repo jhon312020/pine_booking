@@ -30,7 +30,7 @@
                             @if(Session::has('alert-danger'))
                                 <p class="alert alert-danger"> One room deleted successfully</p>
                             @endif
-							@if(Session::has('alert-success'))
+                            @if(Session::has('alert-success'))
                                 <p class="alert alert-danger"> {{Session::get('alert-success')}}</p>
                             @endif
                         </div>
@@ -55,19 +55,19 @@
                                 </td>
                                 <td>
                                 <a href="{{url('/room/edit/'.$room->id)}}" class="btn btn-success" style="float:left; margin-right:10px;"><i class="fa fa-pencil-square-o"></i> Edit</a>
-                                    <form action="{{ url('room/delete/'.$room->id) }}" method="POST">
+                                    <form action="{{ url('room/delete/'.$room->id) }}" method="POST" style='display:inline;'>
                                         {!! csrf_field() !!}
                                         {!! method_field('DELETE') !!}
                                         <button type="submit" class="btn btn-danger" name="delete">
                                             <i class="fa fa-trash"></i> Delete
                                         </button>
                                     </form>
-									@if($room->is_disabled == 0)
-									<a href="{{url('/room/update/'.$room->id)}}" class="btn btn-primary" style="float:left; margin-right:10px;"><i class="fa fa-lock"></i> Disable</a>
-									@elseif($room->is_disabled == 1)
-									<a href="{{url('/room/update/'.$room->id)}}" class="btn btn-primary" style="float:left; margin-right:10px;"><i class="fa fa-unlock"></i> Enable</a>
-									@endif	
-									
+                                    @if($room->is_disabled == 0)
+                                    <a href="{{url('/room/update/'.$room->id)}}" class="btn btn-primary" style="float:left; margin-right:10px;"><i class="fa fa-lock"></i> Disable</a>
+                                    @elseif($room->is_disabled == 1)
+                                    <a href="{{url('/room/update/'.$room->id)}}" class="btn btn-primary" style="float:left; margin-right:10px;"><i class="fa fa-unlock"></i> Enable</a>
+                                    @endif  
+                                    
                                 </td>
                             </tr>
                         @endforeach
@@ -107,45 +107,25 @@
     <script src="{{asset('datatables/js/buttons.html5.min.js')}}"></script>
     <script src="{{asset('datatables/js/buttons.print.min.js')}}"></script>
     <script src="{{asset('datatables/js/buttons.colVis.min.js')}}"></script>
-    <script type="text/javascript">
+     <script type="text/javascript">
         $(function () {
             $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
             $('#room_table').DataTable( {
-                dom: 'Bfrtip',
-                buttons: [
-                     {
-                        extend: 'print',
-                         exportOptions: {
-                            columns: [ 0]
-                        },
-						title: 'Rooms'
-                    },
-                    {
-                        extend: 'excel',
-                        exportOptions: {
-                            columns: [ 0]
-                        },
-						title: 'Rooms'
-                    },
-                    {
-                        extend: 'pdf',
-                        exportOptions: {
-                            columns: [ 0]
-                        },
-						title: 'Rooms'
-                    },
-                    'colvis'
-                ]
+                
+                "columns": [
+                    { "width": "20%" },
+                    { "width": "80%", "orderable": false },
+                ],
             });
-        });
-        $('button[name="delete"]').on('click', function(e){
-            e.preventDefault();
-            var $form=$(this).closest('form'); 
-            $('#confirm').modal({ backdrop: 'static', keyboard: false })
-            .one('click', '#delete', function() {
-                $form.trigger('submit'); // submit the form
+            $('button[name="delete"]').on('click', function(e){
+                e.preventDefault();
+                var $form=$(this).closest('form'); 
+                $('#confirm').modal({ backdrop: 'static', keyboard: false })
+                .one('click', '#delete', function() {
+                    $form.trigger('submit'); // submit the form
+                });
+            // .one() is NOT a typo of .on()
             });
-        // .one() is NOT a typo of .on()
         });
     </script>
 @endsection

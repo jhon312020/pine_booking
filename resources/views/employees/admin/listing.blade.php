@@ -73,7 +73,7 @@
                                 </td>
                                 <td>
                                 <a href="{{url('/employees/edit/'.$Employee->id)}}" class="btn btn-success" style="float:left; margin-right:10px;"><i class="fa fa-pencil-square-o"></i> Edit</a>
-                                    <form action="{{ url('employees/delete/'.$Employee->id) }}" method="POST">
+                                    <form action="{{ url('employees/delete/'.$Employee->id) }}" method="POST" style='display:inline'>
                                         {!! csrf_field() !!}
                                         {!! method_field('DELETE') !!}
                                         <button type="submit" class="btn btn-danger" name="delete">
@@ -126,6 +126,14 @@
         $(function () {
             $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
             $('#Employee_table').DataTable( {
+                "columns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {"orderable": false },
+                ],
                 dom: 'Bfrtip',
                 buttons: [
                      {
@@ -133,21 +141,21 @@
                          exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Employees'
+                        title: 'Employees'
                     },
                     {
                         extend: 'excel',
                         exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Employees'
+                        title: 'Employees'
                     },
                     {
                         extend: 'pdf',
                         exportOptions: {
                             columns: [ 0, 1, 2,3,4 ]
                         },
-						title: 'Employees'
+                        title: 'Employees'
                     },
                     'colvis'
                 ]
