@@ -117,7 +117,7 @@
                                         </tr>
                                     </table>                    
                             @if($reservation->cancel != 1) 
-                            <button class="btn btn-primary btn-lg pull-right" name="payment" style="margin-left:10px;">
+                            <button class="btn btn-primary btn-lg pull-right" name="payment" style="margin-left:10px;" id="jsPaymentButton">
                                 <i class="fa fa-inr"></i> Payment
                             </button>
                             @endif
@@ -408,6 +408,7 @@
     @if($reservation->completed == 1)
     <script type="text/javascript">
         $("#completed_status :input").prop("disabled", true);
+        $("#jsPaymentButton").prop("disabled", false);
     </script>
     @endif
     @if(date('Y-m-d', strtotime($reservation->checkin)) > date('Y-m-d'))

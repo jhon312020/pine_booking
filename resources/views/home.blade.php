@@ -12,11 +12,11 @@
                     <div class="pull-left">
                         <h2>Rooms Availability</h2>
                     </div>
-					<form method="post" id="dateForm" class="hide">
-						{!! csrf_field() !!}
-						<input type="hidden" name="from_date" id="from_date" value="{{date('01-m-Y')}}">
-						<input type="hidden" name="to_date" id="to_date" value="{{date('d-m-Y')}}">
-					</form>
+                    <form method="post" id="dateForm" class="hide">
+                        {!! csrf_field() !!}
+                        <input type="hidden" name="from_date" id="from_date" value="{{date('01-m-Y')}}">
+                        <input type="hidden" name="to_date" id="to_date" value="{{date('d-m-Y')}}">
+                    </form>
                     <div class="pull-right col-lg-6" style="display:table; margin-top:25px;">
                         <form role="form" method="POST" action="{{ url('home/index') }}">
                         {!! csrf_field() !!}
@@ -56,21 +56,21 @@
                         <tr>
                         <td><strong>Available Rooms : </strong></td>
                             @for($i=0; $i<$number_of_days; $i++)
-								<?php $bookedroom = 0; ?>
-								@if(isset($orderbydate[date( "Y-m-d", strtotime("$room_availability_from +$i day"))]))
-									<?php $bookedroom = $orderbydate[date("Y-m-d", strtotime("$room_availability_from +$i day"))]; ?>
-								@endif
-								<?php $availableRooms = ((count($rooms) - $bookedroom) < 0)?0:count($rooms) - $bookedroom; ?>
-								@if($availableRooms)
-									<?php $available_room_style = 'text-align:center;color:white;background-color:green;'; ?>
-								@else
-									<?php $available_room_style = 'text-align:center;color:white;background-color:red;'; ?>
-								@endif
-								<td style=' <?php echo $available_room_style; ?>'>
-								<strong>
-									{{ $availableRooms }}
-								</strong>
-								</td>
+                                <?php $bookedroom = 0; ?>
+                                @if(isset($orderbydate[date( "Y-m-d", strtotime("$room_availability_from +$i day"))]))
+                                    <?php $bookedroom = $orderbydate[date("Y-m-d", strtotime("$room_availability_from +$i day"))]; ?>
+                                @endif
+                                <?php $availableRooms = ((count($rooms) - $bookedroom) < 0)?0:count($rooms) - $bookedroom; ?>
+                                @if($availableRooms)
+                                    <?php $available_room_style = 'text-align:center;color:white;background-color:green;'; ?>
+                                @else
+                                    <?php $available_room_style = 'text-align:center;color:white;background-color:red;'; ?>
+                                @endif
+                                <td style=' <?php echo $available_room_style; ?>'>
+                                <strong>
+                                    {{ $availableRooms }}
+                                </strong>
+                                </td>
 
                             <!--td style='text-align:center;color: #337AB7'>
                             <strong>
@@ -191,10 +191,11 @@
                 </div>
            
             </div>
+            @if($role == 'admin')
             <div class="row">
                <!-- <div class="col-lg-12">
                     <h4 class="text-center text-primary"> Overall expenses for the month of {{Date('F')}} - Rs. {{ number_format($total_expense_of_month,2) }} </h4>
-					<h4 class="text-center text-primary"> Overall incomes of the month of {{Date('F')}} - Rs. {{ number_format($total_income_of_month,2) }} </h4>
+                    <h4 class="text-center text-primary"> Overall incomes of the month of {{Date('F')}} - Rs. {{ number_format($total_income_of_month,2) }} </h4>
                 </div>-->
                 <div class="col-lg-12">
                     <div class="panel panel-default">
@@ -209,6 +210,7 @@
                         <!-- /.panel-body -->
                     </div>
             </div>
+            @endif;
             <!-- /.row -->
         </div>
 <!-- /#page-wrapper -->
@@ -222,6 +224,7 @@
         <script src="{{asset('datepicker/moment-with-locales.js')}}"></script>
         <script src="{{asset('datepicker/datetimepicker.js')}}"></script>
         <!-- <script src="{{asset('js/morris-data.js')}}"></script> -->
+        @if($role == 'admin')
         <script type='text/javascript'>
         $(function() {
             Morris.Line({
@@ -230,17 +233,21 @@
                 xkey: 'Day',
                 ykeys: ['value', 'income' ],
                 labels: ['Expense', 'Income'],
-				lineColors: ['#7a92a3', '#000'],
+                lineColors: ['#7a92a3', '#000'],
                 parseTime: false,
             });
+        });
+        </script>
+        @endif;
+        <script type='text/javascript'>
+        $(function() {
             var date = new Date();
             var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
             $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY',minDate:today});
+            $('.datailHref').bind('click', function(){
+                $('#dateForm').attr('action', $(this).data('action')).submit();
+                
+            })
         });
-		$('.datailHref').bind('click', function(){
-			console.log('asdfadsf')
-			$('#dateForm').attr('action', $(this).data('action')).submit();
-			
-		})
         </script>
 @endsection

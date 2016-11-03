@@ -155,17 +155,17 @@
                                         <input type="text" class="form-control" data-validation="required" placeholder="First Name" name="first_name" id="first_name">
                                     </div>    
                                     <div class="form-group">
-                                        <input type="text" data-validation="required" class="form-control" placeholder="Last Name" name="last_name" id="last_name">
+                                        <input type="text" class="form-control" placeholder="Last Name" name="last_name" id="last_name">
                                     </div>
                                     <div class="form-group">
-                                        <input type="text" class="form-control" data-validation="required email" placeholder="Email" name="email" id="email">
+                                        <input type="text" class="form-control"  placeholder="Email" name="email" id="email">
                                     </div>
                                     <div class="form-group">
-                                        <textarea class="form-control" data-validation="required" name="address" placeholder="Address" id="address"></textarea>
+                                        <textarea class="form-control" name="address" placeholder="Address" id="address"></textarea>
                                     </div>
                                     <div class="form-group">
                                         <span class="btn btn-default btn-file" id="up_prf">
-                                            Upload Proof <input type="file" data-validation="required" class="form-control" placeholder="Upload image" name="image" id="image">
+                                            Upload Proof <input type="file" class="form-control" placeholder="Upload image" name="image" id="image">
                                         </span>
                                         <!-- <input type="file" class="form-control" placeholder="Upload image" name="image" id="image">-->                                        
                                     </div>
@@ -249,7 +249,7 @@
                 $('#address').val("");
             });
             // Datetimepicker has issues on setting the minDate https://github.com/Eonasdan/bootstrap-datetimepicker/issues/1302
-            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: moment().millisecond(0).second(0).minute(0).hour(0) });
+            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: moment().startOf('day').add(-2, 'd').millisecond(0).second(0).minute(0).hour(0) });
             $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY', minDate:new  Date('{{date("Y-m-d", strtotime("+1 day"))}}')});
             $("#datetimepicker1").on("dp.change", function (e) {
                 var newdate = new Date(e.date);

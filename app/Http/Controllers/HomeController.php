@@ -30,6 +30,8 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
         $this->expenses = $expenses;
+        if(isset(\Auth::user()->role))
+            $this->role = \Auth::user()->role;
     }
 
     /**
@@ -112,7 +114,8 @@ class HomeController extends Controller
             'no_of_reserved_days' => $no_of_reserved_days,
             'orderbydate' => $orderbydate,
             'expense_count' => $expense_count,
-            'income_count' => $income_count
+            'income_count' => $income_count,
+            'role'=>$this->role
         ]);
     }
 }

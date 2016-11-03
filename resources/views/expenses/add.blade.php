@@ -26,7 +26,7 @@
                             Add Expense
                         </div>
                         <div class="panel-body">
-                            <form role="form" method="POST" action="{{ url($category.'/add') }}">
+                            <form role="form" method="POST" action="{{ url('expense/add') }}">
                                 {!! csrf_field() !!}
                                 <div class="form-group">
                                     <select name="category" id="category" class="form-control">
@@ -93,7 +93,7 @@
                             <th>Type</th>
                             <th>Amount</th>
                             <th>Notes</th>
-                            <th>&nbsp;</th>
+                            <th>Action</th>
                         </thead>
 
                         <!-- Table Body -->
@@ -116,6 +116,10 @@
                                         </td>
                                         <td class="table-text">
                                             <div>{{ $expense->notes }}</div>
+                                        </td>
+                                        <td class="table-text">
+                                            <a href="{{url('/expense/edit/'.$expense->id)}}" class="btn btn-success"><i class="fa fa-pencil-square-o"></i> Edit</a>
+                                        </button>
                                         </td>
                                         <!-- Delete Button -->
                                     </tr>

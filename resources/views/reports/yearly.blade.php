@@ -8,8 +8,8 @@
                     <h1 class="page-header">Yearly Report</h1>
                 </div>
                 <div class="col-lg-12">
+                    <h4 class="text-center text-primary"> Overall incomes of the year {{ $year }} - Rs. {{ number_format($total_income_of_year,2) }} </h4>
                     <h4 class="text-center text-primary"> Overall expenses of the year {{ $year }} - Rs. {{ number_format($total_expense_of_year,2) }} </h4>
-					<h4 class="text-center text-primary"> Overall incomes of the year {{ $year }} - Rs. {{ number_format($total_income_of_year,2) }} </h4>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -57,7 +57,7 @@
                 data: {!! $expenses_grap_data !!},
                 xkey: 'Month',
                 ykeys: ['expense', 'income'],
-				lineColors: ['#7a92a3', '#000'],
+                lineColors: ['#7a92a3', '#000'],
                 labels: ['Expense', 'Income'],
                 parseTime: false,
             });

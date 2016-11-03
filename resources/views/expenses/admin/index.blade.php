@@ -51,7 +51,7 @@
          <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
-                <div class="pull-right" style="margin-right:15px;"><a href="{{url('/others/add')}}" class="btn btn-primary"></i> Add </a></div>
+                <div class="pull-right" style="margin-right:15px;"><a href="{{url('/expense/add')}}" class="btn btn-primary"></i> Add </a></div>
                 </div>
             </div>
             <div class="row">

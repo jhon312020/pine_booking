@@ -80,7 +80,6 @@ class ReservationController extends Controller
                 }
                 Session::flash('alert-success', 'success');
             }
-
         }
         $reservation = Reservation::find($request->id);
         $reservation_advances = ReservationAdvance::where('reservation_id',$id)->get();
@@ -100,9 +99,9 @@ class ReservationController extends Controller
                 'total_price' => 'required',
                 'phone'=>'required',
                 'first_name'=>'required',
-                'last_name'=>'required',
+                /*'last_name'=>'required',
                 'email'=>'required',
-                'address'=>'required'
+                'address'=>'required'*/
             ]);
             if (Customer::where('phone', '=', $request->phone)->exists()) {
                 $mycustomer = Customer::where('phone', $request->phone)->first();
@@ -243,7 +242,13 @@ class ReservationController extends Controller
             $ext = pathinfo($queries[0]['image'], PATHINFO_EXTENSION);
             if (in_array($ext, array('png','jpg','jpeg','gif','bmp','tiff'))){
                 $mime = 'image/'.$ext;
-                $queries[0]['image'] = 'data:'.$mime.';base64,'.base64_encode(file_get_contents(public_path().'/images/customers/'.$queries[0]['image']));
+                $fileName = public_path().'/images/customers/'.$queries[0]['image'];
+                if (file_exists($fileName)) {
+                    $queries[0]['image'] = 'data:'.$mime.';base64,'.base64_encode(file_get_contents(public_path().'/images/customers/'.$queries[0]['image']));
+                }
+                else {
+                    $queries[0]['image'] = '';
+                }
             }
             else {
                 $queries[0]['link'] = str_replace('/index.php/', '/', url('/images/customers')) . '/' . $queries[0]['image'];

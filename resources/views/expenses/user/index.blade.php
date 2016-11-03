@@ -51,7 +51,7 @@
          <!-- /.row -->
             <div class="row">
                 <div class="col-lg-12">
-                <div class="pull-right" style="margin-right:15px;"><a href="{{url('/others/add')}}" class="btn btn-primary"></i> Add </a></div>
+                <div class="pull-right" style="margin-right:15px;"><a href="{{url('/expense/add')}}" class="btn btn-primary"></i> Add </a></div>
                 </div>
             </div>
             <div class="row">
@@ -66,7 +66,6 @@
                     <th>Type</th>
                     <th>Amount</th>
                     <th>Notes</th>
-                    <th>&nbsp;</th>
                 </thead>
 
                 <!-- Table Body -->
@@ -89,17 +88,6 @@
                                 </td>
                                 <td class="table-text">
                                     <div>{{ $expense->notes }}</div>
-                                </td>
-                                <!-- Delete Button -->
-                                <td>
-                                    <form action="{{ url('expense/delete/'.$expense->id) }}" method="POST">
-                                        {!! csrf_field() !!}
-                                        {!! method_field('DELETE') !!}
-
-                                        <button type="submit" class="btn btn-danger" name="delete">
-                                            <i class="fa fa-trash"></i> Delete
-                                        </button>
-                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -143,7 +131,6 @@
             $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
             $('#expense_table').DataTable( {
                 "columns": [
-                    null,
                     null,
                     null,
                     null,

@@ -21,6 +21,7 @@ Route::get('/', 'HomeController@index');
 Route::match(array('GET', 'POST'), 'home/index', 'HomeController@index');
 #Route::get('expense/add', 'ExpenseController@add');
 Route::match(array('GET', 'POST'), 'expense/add', 'ExpenseController@add');
+Route::match(array('GET', 'POST'), 'expense/edit/{id}', 'ExpenseController@edit');
 Route::match(array('GET', 'POST'), 'expense/list', 'ExpenseController@index');
 Route::match(array('GET', 'POST'), 'expense/getDateIncome', 'ExpenseController@getDateIncome');
 Route::delete('expense/delete/{expense}', 'ExpenseController@delete');
@@ -56,23 +57,6 @@ Route::delete('employees/delete/{employee}', 'EmployeeController@delete');
 Route::match(array('GET', 'POST'), 'employees/pay/{id}', 'EmployeeController@pay');
 Route::match(array('GET', 'POST'), 'employees/getSalary', 'EmployeeController@getSalary');
 
-Route::match(array('GET', 'POST'), 'food/add', 'ExpenseController@add');
-Route::match(array('GET', 'POST'), 'food/list', 'ExpenseController@listing');
-
-Route::match(array('GET', 'POST'), 'laundry/add', 'ExpenseController@add');
-Route::match(array('GET', 'POST'), 'laundry/list', 'ExpenseController@listing');
-
-Route::match(array('GET', 'POST'), 'electricity/add', 'ExpenseController@add');
-Route::match(array('GET', 'POST'), 'electricity/list', 'ExpenseController@listing');
-
-Route::match(array('GET', 'POST'), 'housekeeping/add', 'ExpenseController@add');
-Route::match(array('GET', 'POST'), 'housekeeping/list', 'ExpenseController@listing');
-
-Route::match(array('GET', 'POST'), 'internet/add', 'ExpenseController@add');
-Route::match(array('GET', 'POST'), 'internet/list', 'ExpenseController@listing');
-
-Route::match(array('GET', 'POST'), 'salary/add', 'ExpenseController@add');
-Route::match(array('GET', 'POST'), 'salary/list', 'ExpenseController@listing');
 
 Route::match(array('GET', 'POST'), 'others/add', 'ExpenseController@add');
 Route::match(array('GET', 'POST'), 'others/list', 'ExpenseController@listing');

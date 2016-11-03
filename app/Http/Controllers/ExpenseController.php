@@ -37,10 +37,17 @@ class ExpenseController extends Controller
      */
     protected $role;
     /*
-    *
-    *@var food category
-    */
+     * 
+     * @var food category
+     */
     protected $food_category = array('tea' => 'Tea', 'snacks' => 'Snacks');
+    
+    /*
+     * 
+     * @var expense_category
+     * 
+     */
+    protected $expense_category = array("Food"=>"Food", "Electricity"=>"Electricity", "Electricity Maintenance"=>"Electricity Maintenance", "Laundry"=>"Laundry", "Internet"=>"Internet", "Material"=>"Material", "Building"=>"Building", "House Keeping"=>"House Keeping", "Bank"=>"Bank", "Owner"=>"Owner", "Advertisement"=>"Advertisement", "Commission"=>"Commission", "Tax"=>"Tax", "Others"=>"Others");
     
     /**
      * Create a new controller instance.
@@ -118,7 +125,6 @@ class ExpenseController extends Controller
      */
     public function add(Request $request, Expense $expense)
     {
-        $exp_category = $this->get_expense_category(strtolower($request->route()->getPath()));
         if ($request->isMethod('post')) {
             $this->validate($request, [
                 'name' => 'required | max:100',
@@ -135,7 +141,7 @@ class ExpenseController extends Controller
             ]);
         }
         $expense_object = $this->expenses->categoryListByCreated($expense, date('Y-m-d'));
-        return view('expenses/add', ['category'=>$exp_category, 'expenses' => $expense_object, 'food_category' => $this->food_category]);
+        return view('expenses/add', ['expenses' => $expense_object, 'food_category' => $this->food_category]);
     }
     
     /**
@@ -153,6 +159,40 @@ class ExpenseController extends Controller
             $expense->delete();
         }
         return redirect('/expense/'.$this->role.'/list');
+    }
+    
+    /**
+     * Allows the logged in user to delete his expense.
+     *
+     * @param Request $request
+     * @param Expense $expense
+     * @return void
+     */
+    public function edit(Request $request, Expense $expense)
+    {
+        $expense = Expense::find($request->id);
+        $today = date('Y-m-d');
+        $expense_created_date = date('Y-m-d', strtotime($expense->created_at));
+        if ($expense_created_date == $today) {
+            if ($request->isMethod('post')) {
+                $this->validate($request, [
+                    'name' => 'required | max:100',
+                    'date_of_expense' => 'required',
+                    'amount' => 'required'
+                ]);
+                $expense->name = $request->name;
+                $expense->date_of_expense = date('Y-m-d', strtotime($request->date_of_expense));
+                $expense->category = $request->category;
+                $expense->amount = $request->amount;
+                $expense->notes= $request->notes;
+                $expense->save();
+                return redirect('/expense/add');
+            }
+            return view('expenses/edit', ['expense_category' => $this->expense_category, 'food_category' => $this->food_category, 'expense'=>$expense]);
+        } else {
+            return redirect('/expense/add');
+        }
+        
     }
     
     /**
@@ -201,6 +241,9 @@ class ExpenseController extends Controller
      */
     public function yearly(Request $request, Expense $expense)
     {
+        if ($this->role != 'Admin') {
+            return redirect('/home');
+        }
         switch(strtolower($request->route()->getPath())) {
             case 'reports/lastyear':
                 $current_month = date("m", mktime(null, null, null, 12));
@@ -328,6 +371,7 @@ class ExpenseController extends Controller
             'income_data' => $income_data,
         ]);
     }
+
     /**
      * Get the income and expenses for the particular date
      *
@@ -349,6 +393,7 @@ class ExpenseController extends Controller
         return json_encode($result);
         
     }
+
     /**
      * Displays the datewise report of the expenses and income.
      *
@@ -409,64 +454,5 @@ class ExpenseController extends Controller
             'total_income' => $total_income,
             'total_expenses' => $total_expenses,
         ]);         
-    }
-    
-    /**
-     * Determines the expense category based
-     * on the route.
-     *
-     * @param String $route
-     * @return String $exp_category
-     */
-    private function get_expense_category($route) {
-        switch($route) {
-            case 'food/add':
-            case 'food/list':
-                $exp_category = 'food';
-            break;
-            case 'laundry/add':
-            case 'laundry/list':
-                $exp_category = 'laundry';
-            break;
-            case 'electricity/add':
-            case 'electricity/list':
-                $exp_category = 'electricity';
-            break;
-            case 'housekeeping/add':
-            case 'housekeeping/list':
-                $exp_category = 'housekeeping';
-            break;
-            case 'internet/add':
-            case 'internet/list':
-                $exp_category = 'internet';
-            break;
-            case 'salary/add':
-            case 'salary/list':
-                $exp_category = 'salary';
-            break;
-            case 'bank/add':
-            case 'bank/list':
-                $exp_category = 'bank';
-            break;
-            case 'owner/add':
-            case 'owner/list':
-                $exp_category = 'owner';
-            break;
-            case 'advertisment/add':
-            case 'advertisment/list':
-                $exp_category = 'advertisment';
-            break;
-            case 'commission/add':
-            case 'commission/list':
-                $exp_category = 'commission';
-            break;
-            case 'tax/add':
-            case 'tax/list':
-                $exp_category = 'tax';
-            break;
-            default:
-                $exp_category = 'others';
-        }
-        return $exp_category;
     }
 }

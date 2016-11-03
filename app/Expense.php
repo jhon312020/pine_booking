@@ -26,7 +26,7 @@ class Expense extends Model
 
     
     /**
-     * Get the taks for the user
+     * Get the tasks for the user
      * 
      */
     public function user() {
