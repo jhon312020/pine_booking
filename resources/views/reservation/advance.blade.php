@@ -382,7 +382,7 @@
                 $('#total_bal').html(total_balance);
             }
             
-            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY', minDate: moment().millisecond(0).second(0).minute(0).hour(0) });
+            $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY' });
             $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY',minDate:new  Date('{{date("Y-m-d 00:00:00", strtotime($minDateTo ))}}')});
 
             $("#datetimepicker1").on("dp.change", function (e) {

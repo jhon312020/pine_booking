@@ -26,7 +26,7 @@ class ReservationController extends Controller
             $reservation_date_from = date('Y-m-d', strtotime($request->from_date));
             $reservation_date_to = date('Y-m-d', strtotime($request->to_date));
         } else {
-            $reservation_date_from = date('Y-m-d');
+            $reservation_date_from = date('Y-m-01');
             $reservation_date_to = date('Y-m-t');
         }
         $reservations = Reservation::whereBetween('checkin',[$reservation_date_from, $reservation_date_to])->orderBy('created_at','DESC')->get();
@@ -82,7 +82,7 @@ class ReservationController extends Controller
             }
         }
         $reservation = Reservation::find($request->id);
-        $reservation_advances = ReservationAdvance::where('reservation_id',$id)->get();
+		$reservation_advances = ReservationAdvance::where('reservation_id',$id)->get();
         $total_paid = ReservationAdvance::where('reservation_id',$id)->sum('paid');
         $total_available_rooms = Room::where('is_disabled', 0)->get();
         $minDateTo = date('Y-m-d', strtotime($reservation->checkin . ' +1 day'));
@@ -117,7 +117,7 @@ class ReservationController extends Controller
                 $customer_id = Customer::insertGetId(['first_name' => $request->first_name, 'last_name' => $request->last_name, 'phone' => $request->phone, 'email' => $request->email, 'image'=> $name, 'address'=> $request->address ]);
             }
             $reservation_id = Reservation::insertGetId([
-                    'total_price' => $request->total_price, 'advance' =>$request->advance, 'rent'=>$request->rent,'booked_rooms' => $request->booked_rooms, 'checkin' => date('Y-m-d', strtotime($request->checkin)), 'checkout' => date('Y-m-d', strtotime($request->checkout)), 'customer_id' => $customer_id, 'reference' => $request->reference, 'is_active' => (!is_null($request->is_active))? $request->is_active:0
+                    'total_price' => $request->total_price, 'advance' =>$request->advance, 'rent'=>$request->rent,'booked_rooms' => $request->booked_rooms, 'checkin' => date('Y-m-d', strtotime($request->checkin)), 'checkout' => date('Y-m-d', strtotime($request->checkout)), 'customer_id' => $customer_id, 'reference' => $request->reference, 'is_active' => (!is_null($request->is_active))? $request->is_active:0, 'user_id' => \Auth::user()->id
                     ]); 
 
             $dateDiff = abs(strtotime($request->checkout."-1 days") - strtotime($request->checkin));

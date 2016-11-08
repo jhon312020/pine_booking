@@ -6,6 +6,10 @@
     <div class="row">
         <div class="col-lg-12">
             <h1 class="page-header">Add Income</h1>
+			<div class="pull-right" style="margin-top:20px;">
+                <a href="{{url('/income')}}" class="btn btn-primary"></i> Income List </a>
+            </div>
+            <div class="clearfix"></div>
         </div>
         <!-- /.col-lg-12 -->
          <!-- /.row -->

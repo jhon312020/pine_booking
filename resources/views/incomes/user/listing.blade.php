@@ -11,6 +11,10 @@
             <div class="pull-left">
                 <h1>Incomes</h1>
             </div>
+			<div class="pull-right" style="margin-top:20px;">
+                <a href="{{url('/income/add')}}" class="btn btn-primary"></i> Add Income </a>
+            </div>
+            <div class="clearfix"></div>
             <div class="pull-right" style="display:table; margin-top:25px;">
                 <form role="form" method="POST" action="{{ url('income') }}">
                 {!! csrf_field() !!}
