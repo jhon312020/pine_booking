@@ -81,8 +81,14 @@ class IncomeController extends Controller
                 'amount' => $request->amount,
                 'notes' => $request->notes
             ]);
-        } 
-        return view('incomes/add');
+        }
+		$from_date = Date('Y-m-d');
+		$income_qry = Income::whereRaw('DATE(created_at) = "'.$from_date.'"');
+		$income_list = $income_qry->get();
+			
+        return view('incomes/add', [
+            'incomes' => $income_list
+        ]);
     }
     
     /**
@@ -99,7 +105,7 @@ class IncomeController extends Controller
             $request->session()->put('date_of_income', $income_date[0]->date_of_income);
             $income->delete();
         }
-        return redirect('/income/list');
+        return redirect('/income/add');
     }
    /**
      * Lists all the expenses of the compay.
@@ -109,19 +115,28 @@ class IncomeController extends Controller
      */
     public function listing(Request $request, income $income)
     {
-		$from_date = $to_date = Date('Y-m-d');
+		$from_date = Date('Y-m-01');
+		$to_date = Date('Y-m-d');
         if ($request->isMethod('post')) {
             $from_date = date('Y-m-d', strtotime($request->from_date));
             $to_date = date('Y-m-d', strtotime($request->to_date));
         }
+		$first_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid', DB::raw('DATE(updated_at) as updated_at'))
+							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
+							->whereRaw('DATE(updated_at) <= "'.$to_date.'"');
+							
         $income_qry = ReservationAdvance::select('category', 'mode_of_payment', 'paid', DB::raw('DATE(updated_at) as updated_at'))
 							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
 							->whereRaw('DATE(updated_at) <= "'.$to_date.'"');
-		$income_list = $income_qry->get();
+							
+		$final_qry = $income_qry->union($first_qry);
+		$income_list = $final_qry->get();
+		//print_r($income_list);die;
         //Works only with php 5.5 above
-        $total_incomes = $income_qry->select(DB::raw('sum(paid) as amount'))->first()->amount;
-		
-        return view('incomes/'.Auth::User()->role.'/listing',[
+        $total_incomes = ReservationAdvance::select(DB::raw('sum(paid) as amount'))
+							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
+							->whereRaw('DATE(updated_at) <= "'.$to_date.'"')->first()->amount;
+		return view('incomes/'.Auth::User()->role.'/listing',[
             'income_list' => $income_list,
           //  'category' => $exp_category,
             'from_date' => date('d-m-Y', strtotime($from_date)),

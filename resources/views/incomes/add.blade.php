@@ -53,6 +53,61 @@
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
+			         <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel-body">
+            <table class="table table-striped task-table" id="income_table">
+
+                <!-- Table Headings -->
+                <thead>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Notes</th>
+                    <th>&nbsp;</th>
+                </thead>
+
+                <!-- Table Body -->
+                <tbody>
+                    @if (count($incomes) > 0)
+                        @foreach ($incomes as $income)
+                            <tr>
+                                <!-- Expense Name -->
+                                <td class="table-text">
+                                    <div>{{ date('d-m-Y', strtotime($income->date_of_income)) }}</div>
+                                </td>
+                                <td class="table-text">
+                                    <div>{{ $income->name }}</div>
+                                </td>
+                                <td class="table-text">
+                                    <div>{{ number_format($income->amount, 2) }}</div>
+                                </td>
+                                <td class="table-text">
+                                    <div>{{ $income->notes }}</div>
+                                </td>
+                                <!-- Delete Button -->
+                                <td>
+									<form action="{{ url('income/delete/'.$income->id) }}" method="POST">
+                                        {!! csrf_field() !!}
+                                        {!! method_field('DELETE') !!}
+                                        <button type="submit" class="btn btn-danger" name="delete" onclick="return confirm('Are you sure?')">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+
 
     </div>
 </div>
