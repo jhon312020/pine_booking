@@ -91,7 +91,7 @@
 									<form action="{{ url('income/delete/'.$income->id) }}" method="POST">
                                         {!! csrf_field() !!}
                                         {!! method_field('DELETE') !!}
-                                        <button type="submit" class="btn btn-danger" name="delete" onclick="return confirm('Are you sure?')">
+                                        <button type="submit" class="btn btn-danger" name="delete">
                                             <i class="fa fa-trash"></i> Delete
                                         </button>
                                     </form>
@@ -112,7 +112,7 @@
     </div>
 </div>
 <!-- /#page-wrapper -->
-
+@include('common.modal_confirm')
 @endsection
 @section('load_js')
     @parent
@@ -122,6 +122,16 @@
         $(function() {
             $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY'});
             $('#side-menu').metisMenu();
+			
+			$('button[name="delete"]').on('click', function(e){
+				e.preventDefault();
+				var $form=$(this).closest('form'); 
+				$('#confirm').modal({ backdrop: 'static', keyboard: false })
+				.one('click', '#delete', function() {
+					$form.trigger('submit'); // submit the form
+				});
+			// .one() is NOT a typo of .on()
+			});
         });
     </script>
 @endsection
