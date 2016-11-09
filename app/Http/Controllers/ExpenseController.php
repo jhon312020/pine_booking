@@ -242,7 +242,7 @@ class ExpenseController extends Controller
      */
     public function yearly(Request $request, Expense $expense)
     {
-        if ($this->role != 'Admin') {
+		if ($this->role != 'admin') {
             return redirect('/home');
         }
         switch(strtolower($request->route()->getPath())) {
