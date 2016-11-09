@@ -133,9 +133,11 @@ class IncomeController extends Controller
 		$income_list = $final_qry->get();
 		//print_r($income_list);die;
         //Works only with php 5.5 above
-        $total_incomes = ReservationAdvance::select(DB::raw('sum(paid) as amount'))
-							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
-							->whereRaw('DATE(updated_at) <= "'.$to_date.'"')->first()->amount;
+        $total_incomes = DB::table( DB::raw("({$final_qry->toSql()}) as sub") )
+						->mergeBindings($final_qry->getQuery())
+						->select(DB::raw('sum(sub.paid) as amount'))
+						->first()->amount;
+		
 		return view('incomes/'.Auth::User()->role.'/listing',[
             'income_list' => $income_list,
           //  'category' => $exp_category,
