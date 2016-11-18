@@ -121,9 +121,9 @@ class IncomeController extends Controller
             $from_date = date('Y-m-d', strtotime($request->from_date));
             $to_date = date('Y-m-d', strtotime($request->to_date));
         }
-		$first_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid', DB::raw('DATE(updated_at) as updated_at'))
-							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
-							->whereRaw('DATE(updated_at) <= "'.$to_date.'"');
+		$first_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid', DB::raw('DATE(date_of_income) as updated_at'))
+							->whereRaw('DATE(date_of_income) >= "'.$from_date.'"')
+							->whereRaw('DATE(date_of_income) <= "'.$to_date.'"');
 							
         $income_qry = ReservationAdvance::select('category', 'mode_of_payment', 'paid', DB::raw('DATE(updated_at) as updated_at'))
 							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')

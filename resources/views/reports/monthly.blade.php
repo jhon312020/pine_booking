@@ -62,9 +62,9 @@
                 element: 'line-chart',
                 data: {!! $expenses_grap_data !!},
                 xkey: 'Day',
-                ykeys: ['value', 'income'],
+                ykeys: ['income', 'value'],
                 lineColors: ['#7a92a3', '#000'],
-                labels: ['Expense', 'Income'],
+                labels: ['Income', 'Expense'],
                 parseTime: false,
             });
 

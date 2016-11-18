@@ -56,9 +56,9 @@
                 element: 'bar-chart',
                 data: {!! $expenses_grap_data !!},
                 xkey: 'Month',
-                ykeys: ['expense', 'income'],
+                ykeys: ['income', 'expense'],
                 lineColors: ['#7a92a3', '#000'],
-                labels: ['Expense', 'Income'],
+                labels: ['Income', 'Expense'],
                 parseTime: false,
             });
 

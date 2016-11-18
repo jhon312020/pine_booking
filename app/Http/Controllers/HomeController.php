@@ -66,14 +66,14 @@ class HomeController extends Controller
         /*income for month start*/
         $expense_count = $expense->whereRaw('MONTH(date_of_expense) = "'.$month.'" and YEAR(date_of_expense) = YEAR(NOW())')->count() + DB::table('employee_payments')->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')->count();
 		
-        $income_count = Income::select('id')->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')->count() + 
+        $income_count = Income::select('id')->whereRaw('MONTH(date_of_income) = "'.$month.'" and YEAR(date_of_income) = YEAR(NOW())')->count() + 
 							ReservationAdvance::select('id')->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')
 							->count();
 		
         
-        $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('DAY(updated_at) as paid_date'))
-				->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')
-				->groupby(DB::raw('DATE(updated_at)'))
+        $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('DAY(date_of_income) as paid_date'))
+				->whereRaw('MONTH(date_of_income) = "'.$month.'" and YEAR(date_of_income) = YEAR(NOW())')
+				->groupby(DB::raw('DATE(date_of_income)'))
 				->union(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
 				->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())'))
 				->groupby(DB::raw('DATE(updated_at)'));

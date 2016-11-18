@@ -150,38 +150,7 @@
                             '<tr class="duplicateRow" style="display:none;">'+
                                 '<td colspan=3>'+
                                     '<div class="col-sm-12 duplicateDiv" style="display:none;">'+
-                                        '<div class="col-sm-6">'+
-                                            '<div class="panel panel-default">'+
-                                                '<div class="panel-heading">'+
-                                                    '<i class="fa fa-bar-chart-o fa-fw"></i> Expenses on '+ind_date+
-                                                '</div>'+
-                                                '<div class="panel-body">'+
-                                                    '<table class="table">'+
-                                                        '<thead>'+
-                                                            '<tr>'+
-                                                                '<th>Category</th>'+
-                                                                //'<th>Date</th>'+
-                                                                '<th>Type</th>'+
-                                                                '<th>Amount</th>'+
-                                                            '</tr>'+    
-                                                        '</thead>'+
-                                                        '<tbody>';
-                                                            $.each(data['expense_list'], function(i,v){
-                                                                html += 
-                                                                '<tr>'+
-                                                                    '<td>'+v.category.charAt(0).toUpperCase() + v.category.slice(1)+'</td>'+
-                                                                    //'<td>'+v.date_of_expense+'</td>'+
-                                                                    '<td>'+v.name+'</td>'+
-                                                                    '<td>'+v.amount+'</td>'+
-                                                                '</tr>';    
-                                                            })
-                                                        html +=     
-                                                        '</tbody>'+
-                                                    '</table>'+
-                                                '</div>'+
-                                            '</div>'+       
-                                        '</div>'+
-                                        '<div class="col-sm-6">'+
+										'<div class="col-sm-6">'+
                                             '<div class="panel panel-default">'+
                                                 '<div class="panel-heading">'+
                                                     '<i class="fa fa-bar-chart-o fa-fw"></i> Incomes on '+ind_date+
@@ -213,6 +182,38 @@
                                             '</div>'+
                                                     
                                         '</div>'+
+                                        '<div class="col-sm-6">'+
+                                            '<div class="panel panel-default">'+
+                                                '<div class="panel-heading">'+
+                                                    '<i class="fa fa-bar-chart-o fa-fw"></i> Expenses on '+ind_date+
+                                                '</div>'+
+                                                '<div class="panel-body">'+
+                                                    '<table class="table">'+
+                                                        '<thead>'+
+                                                            '<tr>'+
+                                                                '<th>Category</th>'+
+                                                                //'<th>Date</th>'+
+                                                                '<th>Type</th>'+
+                                                                '<th>Amount</th>'+
+                                                            '</tr>'+    
+                                                        '</thead>'+
+                                                        '<tbody>';
+                                                            $.each(data['expense_list'], function(i,v){
+                                                                html += 
+                                                                '<tr>'+
+                                                                    '<td>'+v.category.charAt(0).toUpperCase() + v.category.slice(1)+'</td>'+
+                                                                    //'<td>'+v.date_of_expense+'</td>'+
+                                                                    '<td>'+v.name+'</td>'+
+                                                                    '<td>'+v.amount+'</td>'+
+                                                                '</tr>';    
+                                                            })
+                                                        html +=     
+                                                        '</tbody>'+
+                                                    '</table>'+
+                                                '</div>'+
+                                            '</div>'+       
+                                        '</div>'+
+                                        
                                     '</div>'+
                                 '</td>'+
                             '</tr>';
