@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Expenses chart for the year {{ $year }} 
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Income and Expense chart for the year of {{ $year }} 
                             <div class="pull-right">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">

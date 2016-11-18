@@ -96,7 +96,7 @@
             
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Expenses Info</h2>
+                    <h2>Income and Expense info</h2>
                 </div>
             </div>
             <div class="row">
@@ -198,7 +198,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Expenses chart for the month of {{ date('F') }}
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Income and Expense chart for the month of {{ date('F') }}
                         </div>
                         
                         <!-- /.panel-heading -->

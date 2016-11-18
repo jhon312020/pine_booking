@@ -32,13 +32,13 @@
             </li> 
             <li>
                 <a href="#"><i class="fa fa-sitemap fa-fw"></i> Reports<span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level" >
+                <ul class="nav nav-second-level {{ Request::is('reports/month/*') || Request::is('reports/currentyear') || Request::is('reports/lastyear')?'collapse in':'' }}" >
                     @if(Auth::user()->role == 'admin')
                     <li>
-                        <a href="{{url('/reports/monthly')}}">Current Month</a>
+                        <a class="{{ Request::is('reports/month/*')?'active':'' }}" href="{{url('/reports/monthly')}}">Current Month</a>
                     </li>
                     <li>
-                        <a href="{{url('/reports/currentyear')}}">Current Year</a>
+                        <a class="{{ Request::is('reports/currentyear') || Request::is('reports/lastyear') ?'active':'' }}" href="{{url('/reports/currentyear')}}">Current Year</a>
                     </li>
                     @endif
                     <li>

@@ -5,7 +5,7 @@
 <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Report</h1>
+                    <h1 class="page-header">Monthly Report</h1>
                 </div>
                 <div class="col-lg-12">
                     <h4 class="text-center text-primary"> Overall incomes for the month of {{ $month }} - Rs. {{ number_format($total_income_of_month,2) }} </h4>
@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Expenses chart for the month of {{ $month }}
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Income and Expense chart for the month of {{ $month }}
                             <div class="pull-right">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -67,7 +67,6 @@
                 labels: ['Income', 'Expense'],
                 parseTime: false,
             });
-
         });
         </script>
 @endsection
