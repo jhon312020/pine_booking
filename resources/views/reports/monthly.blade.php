@@ -63,7 +63,7 @@
                 data: {!! $expenses_grap_data !!},
                 xkey: 'Day',
                 ykeys: ['income', 'value'],
-                lineColors: ['#5cb85c', '#CC3333'],
+                lineColors: ['#008000', '#CC3333'],
                 labels: ['Income', 'Expense'],
                 parseTime: false,
             });

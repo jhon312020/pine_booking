@@ -57,7 +57,7 @@
                 data: {!! $expenses_grap_data !!},
                 xkey: 'Month',
                 ykeys: ['income', 'expense'],
-                barColors: ['#5cb85c', '#CC3333'],
+                barColors: ['#008000', '#CC3333'],
                 labels: ['Income', 'Expense'],
                 parseTime: false,
             });

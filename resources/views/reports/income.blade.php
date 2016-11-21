@@ -129,6 +129,7 @@
         
             var old_date = '';
             $('table tbody').on('click', 'tr.datatabletd', function () {
+				block_screen();
                 var data = table.row( this ).data();
                 var ele = $(this);
                 var ind_date = data[0];
@@ -220,13 +221,16 @@
                             ele.after(html);
                             $('.duplicateRow').slideDown('slow');
                             $('.duplicateDiv').slideDown('slow');
+							unblock_screen()
                         },
                         error:function(jqXHR, textStatus, errorThrown){
                             console.log(textStatus+'----'+errorThrown);
+							unblock_screen();
                         }
                     });
                 } else {
                     old_date = '';
+					unblock_screen();
                 }
             });
 

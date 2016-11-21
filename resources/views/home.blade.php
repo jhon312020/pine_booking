@@ -231,7 +231,7 @@
                 xkey: 'Day',
                 ykeys: ['income', 'value' ],
                 labels: ['Income', 'Expense'],
-                lineColors: ['#5cb85c', '#CC3333'],
+                lineColors: ['#008000', '#CC3333'],
                 parseTime: false,
             });
         });
