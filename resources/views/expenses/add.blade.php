@@ -31,20 +31,9 @@
                                 <div class="form-group">
                                     <select name="category" id="category" class="form-control">
                                         <option value="">Select Category</option>
-                                        <option value="Food">Food</option>
-                                        <option value="Electricity">Electricity</option>
-                                        <option value="Electricity Maintenance">Electricity Maintenance</option>
-                                        <option value="Laundry">Laundry</option>
-                                        <option value="Internet">Internet</option>
-                                        <option value="Material">Material</option>
-                                        <option value="Building">Building</option>
-                                        <option value="House Keeping">House Keeping</option>
-                                        <option value="Bank">Bank</option>
-                                        <option value="Owner">Owner</option>
-                                        <option value="Advertisement">Advertisement</option>
-                                        <option value="Commission">Commission</option>
-                                        <option value="Tax">Tax</option>
-                                        <option value="Others">Others</option>
+                                        @foreach($expense_category as $key=>$value)
+                                              <option value="{{$key}}">{{$value}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 

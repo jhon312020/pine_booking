@@ -21,6 +21,11 @@ class IncomeController extends Controller
      * @var incomeRespository 
      */
     protected $incomes;
+    /**
+     * 
+     * @var income category
+     */
+    protected $income_category = array('Tea/coffee' => 'Tea/coffee', 'Cooldrinks/Water' => 'Cooldrinks/Water');
     
     /**
      * Create a new controller instance.
@@ -30,8 +35,8 @@ class IncomeController extends Controller
     public function __construct(IncomeRepository $incomes)
     {
         $this->middleware('auth');
-		if(isset(\Auth::user()->role))
-			$this->incomes = $incomes;
+    if(isset(\Auth::user()->role))
+      $this->incomes = $incomes;
     }
     
     /**
@@ -82,12 +87,13 @@ class IncomeController extends Controller
                 'notes' => $request->notes
             ]);
         }
-		$from_date = Date('Y-m-d');
-		$income_qry = Income::whereRaw('DATE(created_at) = "'.$from_date.'"');
-		$income_list = $income_qry->get();
-			
+    $from_date = Date('Y-m-d');
+    $income_qry = Income::whereRaw('DATE(created_at) = "'.$from_date.'"');
+    $income_list = $income_qry->get();
+      
         return view('incomes/add', [
-            'incomes' => $income_list
+            'incomes' => $income_list,
+            'income_category' => $this->income_category
         ]);
     }
     
@@ -115,30 +121,30 @@ class IncomeController extends Controller
      */
     public function listing(Request $request, income $income)
     {
-		$from_date = Date('Y-m-01');
-		$to_date = Date('Y-m-d');
+    $from_date = Date('Y-m-01');
+    $to_date = Date('Y-m-d');
         if ($request->isMethod('post')) {
             $from_date = date('Y-m-d', strtotime($request->from_date));
             $to_date = date('Y-m-d', strtotime($request->to_date));
         }
-		$first_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid', DB::raw('DATE(date_of_income) as updated_at'))
-							->whereRaw('DATE(date_of_income) >= "'.$from_date.'"')
-							->whereRaw('DATE(date_of_income) <= "'.$to_date.'"');
-							
+    $first_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid', DB::raw('DATE(date_of_income) as updated_at'))
+              ->whereRaw('DATE(date_of_income) >= "'.$from_date.'"')
+              ->whereRaw('DATE(date_of_income) <= "'.$to_date.'"');
+              
         $income_qry = ReservationAdvance::select('category', 'mode_of_payment', 'paid', DB::raw('DATE(updated_at) as updated_at'))
-							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
-							->whereRaw('DATE(updated_at) <= "'.$to_date.'"');
-							
-		$final_qry = $income_qry->unionAll($first_qry);
-		$income_list = $final_qry->get();
-		//print_r($income_list);die;
+              ->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
+              ->whereRaw('DATE(updated_at) <= "'.$to_date.'"');
+              
+    $final_qry = $income_qry->unionAll($first_qry);
+    $income_list = $final_qry->get();
+    //print_r($income_list);die;
         //Works only with php 5.5 above
         $total_incomes = DB::table( DB::raw("({$final_qry->toSql()}) as sub") )
-						->mergeBindings($final_qry->getQuery())
-						->select(DB::raw('sum(sub.paid) as amount'))
-						->first()->amount;
-		
-		return view('incomes/'.Auth::User()->role.'/listing',[
+            ->mergeBindings($final_qry->getQuery())
+            ->select(DB::raw('sum(sub.paid) as amount'))
+            ->first()->amount;
+    
+    return view('incomes/'.Auth::User()->role.'/listing',[
             'income_list' => $income_list,
           //  'category' => $exp_category,
             'from_date' => date('d-m-Y', strtotime($from_date)),

@@ -53,10 +53,13 @@ class HomeController extends Controller
             $room_availability_to = date('Y-m-d', strtotime($room_availability_from .' +14 days'));
             $month_lead = date("n");
         }
-        $today = date('Y-m-d');
+        //As the entry will delayed one day, so minusing the one day from current date
+        $today = date('Y-m-d', strtotime("-1 days"));
         $yesterday = date('Y-m-d', strtotime("-1 days"));
         $month = date('m');
-        $day_of_today = date('d');
+        //As the entry will delayed one day, so minusing the one day from current date
+        $day_of_today = date('d',strtotime("-1 days"));
+
         
         $expenses_grouped_for_user = $this->expenses->expensesOfCompanyGroupedByDate($expense, $month);
         //$expenses_grouped = $expenses_grouped_for_user->toArray();

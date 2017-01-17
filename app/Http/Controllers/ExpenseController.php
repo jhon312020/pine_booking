@@ -48,7 +48,7 @@ class ExpenseController extends Controller
      * @var expense_category
      * 
      */
-    protected $expense_category = array("Food"=>"Food", "Electricity"=>"Electricity", "Electricity Maintenance"=>"Electricity Maintenance", "Laundry"=>"Laundry", "Internet"=>"Internet", "Material"=>"Material", "Building"=>"Building", "House Keeping"=>"House Keeping", "Bank"=>"Bank", "Owner"=>"Owner", "Advertisement"=>"Advertisement", "Commission"=>"Commission", "Tax"=>"Tax", "Others"=>"Others");
+    protected $expense_category = array("Food"=>"Food", "Electricity"=>"Electricity", "Electricity Maintenance"=>"Electricity Maintenance", "Laundry"=>"Laundry", "Internet"=>"Internet", "Material"=>"Material", "Building"=>"Building", "House Keeping"=>"House Keeping", "Bank"=>"Bank", "Owner"=>"Owner", "Advertisement"=>"Advertisement", "Commission"=>"Commission", "Tax"=>"Tax", "Labour/Salary"=>"Labour/Salary", "Other Labour"=>"Other Labour", "Others"=>"Others");
     
     /**
      * Create a new controller instance.
@@ -142,7 +142,7 @@ class ExpenseController extends Controller
             ]);
         }
         $expense_object = $this->expenses->categoryListByCreated($expense, date('Y-m-d'));
-        return view('expenses/add', ['expenses' => $expense_object, 'food_category' => $this->food_category]);
+        return view('expenses/add', ['expenses' => $expense_object, 'food_category' => $this->food_category, 'expense_category' => $this->expense_category]);
     }
     
     /**
@@ -242,7 +242,7 @@ class ExpenseController extends Controller
      */
     public function yearly(Request $request, Expense $expense)
     {
-		if ($this->role != 'admin') {
+    if ($this->role != 'admin') {
             return redirect('/home');
         }
         switch(strtolower($request->route()->getPath())) {
@@ -265,27 +265,27 @@ class ExpenseController extends Controller
         $income_of_year = array_combine(array_column($income_of_year->toArray(), 'month'), array_column($income_of_year->toArray(), 'totalamount'));
        
        /*income for month start*/
-	   $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('MONTH(date_of_income) as paid_month'))
-				->whereRaw('YEAR(date_of_income) = "'.$year.'"')
-				->groupby(DB::raw('MONTH(date_of_income)'))
-				->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('MONTH(updated_at) as paid_month'))
-				->whereRaw('YEAR(updated_at) = "'.$year.'"')
-				->groupby(DB::raw('MONTH(updated_at)')));
-		
-		$data = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
-				->mergeBindings($subQry->getQuery())
-				->select(DB::raw('sum(sub.amount) as amount'), 'sub.paid_month')
-				->groupby('paid_month')
-				->get();
-		
-		$income = json_decode(json_encode($data), true);
+     $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('MONTH(date_of_income) as paid_month'))
+        ->whereRaw('YEAR(date_of_income) = "'.$year.'"')
+        ->groupby(DB::raw('MONTH(date_of_income)'))
+        ->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('MONTH(updated_at) as paid_month'))
+        ->whereRaw('YEAR(updated_at) = "'.$year.'"')
+        ->groupby(DB::raw('MONTH(updated_at)')));
+    
+    $data = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
+        ->mergeBindings($subQry->getQuery())
+        ->select(DB::raw('sum(sub.amount) as amount'), 'sub.paid_month')
+        ->groupby('paid_month')
+        ->get();
+    
+    $income = json_decode(json_encode($data), true);
         $income_data = array_combine(array_column($income, 'paid_month'), array_column($income, 'amount'));
-	   
-	   
-		$total_income = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
-						->mergeBindings($subQry->getQuery())
-						->select(DB::raw('sum(sub.amount) as amount'))
-						->first();
+     
+     
+    $total_income = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
+            ->mergeBindings($subQry->getQuery())
+            ->select(DB::raw('sum(sub.amount) as amount'))
+            ->first();
         if($total_income->amount)
             $total_income_of_year = $total_income->amount;
         /*income for month end*/
@@ -347,20 +347,20 @@ class ExpenseController extends Controller
         
         /*income for month start*/
         $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('DAY(date_of_income) as paid_date'))
-				->whereRaw('MONTH(date_of_income) = "'.$month_lead.'" and YEAR(date_of_income) = YEAR(NOW())')
-				->groupby(DB::raw('DATE(date_of_income)'))
-				->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
-				->whereRaw('MONTH(updated_at) = "'.$month_lead.'" and YEAR(updated_at) = YEAR(NOW())'))
-				->groupby(DB::raw('DATE(updated_at)'));
-		
-		$data = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
-				->mergeBindings($subQry->getQuery())
-				->select(DB::raw('sum(sub.amount) as amount'), 'sub.paid_date')
-				->groupby('paid_date')
-				->get();
-				
-		
-		$income = json_decode(json_encode($data), true);
+        ->whereRaw('MONTH(date_of_income) = "'.$month_lead.'" and YEAR(date_of_income) = YEAR(NOW())')
+        ->groupby(DB::raw('DATE(date_of_income)'))
+        ->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
+        ->whereRaw('MONTH(updated_at) = "'.$month_lead.'" and YEAR(updated_at) = YEAR(NOW())'))
+        ->groupby(DB::raw('DATE(updated_at)'));
+    
+    $data = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
+        ->mergeBindings($subQry->getQuery())
+        ->select(DB::raw('sum(sub.amount) as amount'), 'sub.paid_date')
+        ->groupby('paid_date')
+        ->get();
+        
+    
+    $income = json_decode(json_encode($data), true);
         $income_data = array_combine(array_column($income, 'paid_date'), array_column($income, 'amount'));
         
         $total_income_of_month = $this->incomes->incomeOfUserForMonth($request->user(), $month, date('Y'))->toArray();
@@ -371,11 +371,11 @@ class ExpenseController extends Controller
         }
         
         $total_income = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
-						->mergeBindings($subQry->getQuery())
-						->select(DB::raw('sum(sub.amount) as amount'))
-						->first();
-		if($total_income->amount)
-            $total_income_of_month = $total_income->amount;				
+            ->mergeBindings($subQry->getQuery())
+            ->select(DB::raw('sum(sub.amount) as amount'))
+            ->first();
+    if($total_income->amount)
+            $total_income_of_month = $total_income->amount;       
         /*income for month end*/
         
         //print_r($total_income_of_month);die;
@@ -410,17 +410,17 @@ class ExpenseController extends Controller
      */
     public function getDateIncome(Request $request, Expense $expense) {
         $date = $request->report_date;
-		$income_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid')
-				->whereRaw('DATE(date_of_income) = "'.$date.'"')
-				->unionAll(ReservationAdvance::select('category', 'mode_of_payment', 'paid')
-				->whereRaw('DATE(updated_at) = "'.$date.'"'));
+    $income_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid')
+        ->whereRaw('DATE(date_of_income) = "'.$date.'"')
+        ->unionAll(ReservationAdvance::select('category', 'mode_of_payment', 'paid')
+        ->whereRaw('DATE(updated_at) = "'.$date.'"'));
         
         $result['income_list'] = $income_qry->get();
         //Works only with php 5.5 above
         $result['total_incomes'] = DB::table( DB::raw("({$income_qry->toSql()}) as sub") )
-								->mergeBindings($income_qry->getQuery())
-								->select(DB::raw('sum(sub.paid) as amount'))
-								->first()->amount;
+                ->mergeBindings($income_qry->getQuery())
+                ->select(DB::raw('sum(sub.paid) as amount'))
+                ->first()->amount;
         
         $result['expense_list'] = $this->expenses->allExpenses($expense, $date, $date);
         //Works only with php 5.5 above
@@ -444,26 +444,26 @@ class ExpenseController extends Controller
             $from_date = Date('Y-m-d', strtotime($request->from_date));
             $to_date = Date('Y-m-d', strtotime($request->to_date));
         }
-			  
-					
-		$subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('0 as expense_amount'), DB::raw('DATE(date_of_income) as report_date'))
-				->whereRaw('DATE(date_of_income) >= "'.$from_date.'" and DATE(date_of_income) <= "'.$to_date.'"')
-				->groupby(DB::raw('DATE(date_of_income)'))
-				->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('0 as expense_amount'), DB::raw('DATE(updated_at) as report_date'))
-				->whereRaw('DATE(updated_at) >= "'.$from_date.'" and DATE(updated_at) <= "'.$to_date.'"')
-				->groupby(DB::raw('DATE(updated_at)')))
-				->unionAll(Expense::select(DB::raw('0 as amount'), DB::raw('sum(amount) as expense_amount'), DB::raw('DATE(date_of_expense) as report_date'))
-				->whereRaw('DATE(date_of_expense) >= "'.$from_date.'" and DATE(date_of_expense) <= "'.$to_date.'"')
-				->groupby(DB::raw('DATE(date_of_expense)')))
-				->unionAll(EmployeePayment::select(DB::raw('0 as amount'), DB::raw('sum(amount) as expense_amount'), DB::raw('DATE(updated_at) as report_date'))
-				->whereRaw('DATE(updated_at) >= "'.$from_date.'" and DATE(updated_at) <= "'.$to_date.'"')
-				->groupby(DB::raw('DATE(updated_at)')));
-		
-		$incomes = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
-				->mergeBindings($subQry->getQuery())
-				->select(DB::raw('sum(sub.amount) as income_amount'), DB::raw('sum(sub.expense_amount) as expense_amount'), 'sub.report_date')
-				->groupby('report_date')
-				->get();		
+        
+          
+    $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('0 as expense_amount'), DB::raw('DATE(date_of_income) as report_date'))
+        ->whereRaw('DATE(date_of_income) >= "'.$from_date.'" and DATE(date_of_income) <= "'.$to_date.'"')
+        ->groupby(DB::raw('DATE(date_of_income)'))
+        ->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('0 as expense_amount'), DB::raw('DATE(updated_at) as report_date'))
+        ->whereRaw('DATE(updated_at) >= "'.$from_date.'" and DATE(updated_at) <= "'.$to_date.'"')
+        ->groupby(DB::raw('DATE(updated_at)')))
+        ->unionAll(Expense::select(DB::raw('0 as amount'), DB::raw('sum(amount) as expense_amount'), DB::raw('DATE(date_of_expense) as report_date'))
+        ->whereRaw('DATE(date_of_expense) >= "'.$from_date.'" and DATE(date_of_expense) <= "'.$to_date.'"')
+        ->groupby(DB::raw('DATE(date_of_expense)')))
+        ->unionAll(EmployeePayment::select(DB::raw('0 as amount'), DB::raw('sum(amount) as expense_amount'), DB::raw('DATE(updated_at) as report_date'))
+        ->whereRaw('DATE(updated_at) >= "'.$from_date.'" and DATE(updated_at) <= "'.$to_date.'"')
+        ->groupby(DB::raw('DATE(updated_at)')));
+    
+    $incomes = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
+        ->mergeBindings($subQry->getQuery())
+        ->select(DB::raw('sum(sub.amount) as income_amount'), DB::raw('sum(sub.expense_amount) as expense_amount'), 'sub.report_date')
+        ->groupby('report_date')
+        ->get();    
 
         //$incomes = $incomes_qry->get();
         //print_r($incomes);die;
