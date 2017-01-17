@@ -74,7 +74,7 @@ class HomeController extends Controller
         $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('DAY(date_of_income) as paid_date'))
 				->whereRaw('MONTH(date_of_income) = "'.$month.'" and YEAR(date_of_income) = YEAR(NOW())')
 				->groupby(DB::raw('DATE(date_of_income)'))
-				->union(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
+				->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
 				->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())'))
 				->groupby(DB::raw('DATE(updated_at)'));
 		

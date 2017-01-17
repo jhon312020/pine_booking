@@ -129,7 +129,7 @@ class IncomeController extends Controller
 							->whereRaw('DATE(updated_at) >= "'.$from_date.'"')
 							->whereRaw('DATE(updated_at) <= "'.$to_date.'"');
 							
-		$final_qry = $income_qry->union($first_qry);
+		$final_qry = $income_qry->unionAll($first_qry);
 		$income_list = $final_qry->get();
 		//print_r($income_list);die;
         //Works only with php 5.5 above
