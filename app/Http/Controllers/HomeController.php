@@ -56,43 +56,56 @@ class HomeController extends Controller
         $today = date('Y-m-d');
         $yesterday = date('Y-m-d', strtotime("-1 days"));
         $month = date('m');
+        $day_of_today = date('d');
         
         $expenses_grouped_for_user = $this->expenses->expensesOfCompanyGroupedByDate($expense, $month);
         //$expenses_grouped = $expenses_grouped_for_user->toArray();
         $expenses_data = array_combine(array_column($expenses_grouped_for_user, 'report_date'), array_column($expenses_grouped_for_user, 'totalamount'));
         $last_day_this_month  = date('t');
-		$total_expense_of_month = 0;
+        $total_expense_of_month = 0;
         
         /*income for month start*/
-        $expense_count = $expense->whereRaw('MONTH(date_of_expense) = "'.$month.'" and YEAR(date_of_expense) = YEAR(NOW())')->count() + DB::table('employee_payments')->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')->count();
-		
-        $income_count = Income::select('id')->whereRaw('MONTH(date_of_income) = "'.$month.'" and YEAR(date_of_income) = YEAR(NOW())')->count() + 
-							ReservationAdvance::select('id')->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')
-							->count();
-		
-        
+        if ($this->role == 'admin') {
+          $expense_count = $expense->whereRaw('MONTH(date_of_expense) = "'.$month.'" and YEAR(date_of_expense) = YEAR(NOW())')->count() + DB::table('employee_payments')->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')->count();
+          
+          $income_count = Income::select('id')->whereRaw('MONTH(date_of_income) = "'.$month.'" and YEAR(date_of_income) = YEAR(NOW())')->count() + 
+            ReservationAdvance::select('id')->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())')
+              ->count();
         $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('DAY(date_of_income) as paid_date'))
-				->whereRaw('MONTH(date_of_income) = "'.$month.'" and YEAR(date_of_income) = YEAR(NOW())')
-				->groupby(DB::raw('DATE(date_of_income)'))
-				->unionAll(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
-				->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())'))
-				->groupby(DB::raw('DATE(updated_at)'));
-		
-		$data = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
-				->mergeBindings($subQry->getQuery())
-				->select(DB::raw('sum(sub.amount) as amount'), 'sub.paid_date')
-				->groupby('paid_date')
-				->get();
-				
-		
-		$income = json_decode(json_encode($data), true);
+        ->whereRaw('MONTH(date_of_income) = "'.$month.'" and YEAR(date_of_income) = YEAR(NOW())')
+        ->groupby(DB::raw('DATE(date_of_income)'))
+        ->union(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
+        ->whereRaw('MONTH(updated_at) = "'.$month.'" and YEAR(updated_at) = YEAR(NOW())'))
+        ->groupby(DB::raw('DATE(updated_at)'));
+        } else {
+          $expense_count = $expense->whereRaw('date_of_expense = "'.$today.'" and YEAR(date_of_expense) = YEAR(NOW())')->count() + DB::table('employee_payments')->whereRaw('updated_at = "'.$today.'" and YEAR(updated_at) = YEAR(NOW())')->count();
+          
+          $income_count = Income::select('id')->whereRaw('date_of_income = "'.$today.'" and YEAR(date_of_income) = YEAR(NOW())')->count() + 
+              ReservationAdvance::select('id')->whereRaw('updated_at = "'.$today.'" and YEAR(updated_at) = YEAR(NOW())')
+              ->count();
+          $subQry = Income::select(DB::raw('sum(amount) as amount'), DB::raw('DAY(date_of_income) as paid_date'))
+        ->whereRaw('date_of_income = "'.$today.'" and YEAR(date_of_income) = YEAR(NOW())')
+        ->groupby(DB::raw('DATE(date_of_income)'))
+        ->union(ReservationAdvance::select(DB::raw('sum(paid) as amount'), DB::raw('DAY(updated_at) as paid_date'))
+        ->whereRaw('updated_at = "'.$today.'" and YEAR(updated_at) = YEAR(NOW())'))
+        ->groupby(DB::raw('DATE(updated_at)'));
+        }
+    
+        $data = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
+        ->mergeBindings($subQry->getQuery())
+        ->select(DB::raw('sum(sub.amount) as amount'), 'sub.paid_date')
+        ->groupby('paid_date')
+        ->get();
+        
+    
+        $income = json_decode(json_encode($data), true);
         $income_data = array_combine(array_column($income, 'paid_date'), array_column($income, 'amount'));
-		
+    
         $total_income_of_month = 0;
         $total_income = DB::table( DB::raw("({$subQry->toSql()}) as sub") )
-						->mergeBindings($subQry->getQuery())
-						->select(DB::raw('sum(sub.amount) as amount'))
-						->first();
+            ->mergeBindings($subQry->getQuery())
+            ->select(DB::raw('sum(sub.amount) as amount'))
+            ->first();
         if($total_income->amount)
             $total_income_of_month = $total_income->amount;
         /*income for month end*/
@@ -102,7 +115,12 @@ class HomeController extends Controller
             $show_date = date('d-m-Y', strtotime($process_date));
             if (array_key_exists($day, $expenses_data)) {
                 $expenses_data_for_month[] = array('Day'=>"$show_date",'value'=>$expenses_data[$day], 'income' => isset($income_data[$day])?$income_data[$day]:0);
-                $total_expense_of_month += $expenses_data[$day];
+                if ($this->role == 'admin') {
+                  $total_expense_of_month += $expenses_data[$day];
+                } else {
+                  if ($day_of_today == $day)
+                    $total_expense_of_month += $expenses_data[$day];
+                }
             } else {
                 $expenses_data_for_month[] = array('Day'=>"$show_date",'value'=>0, 'income' => isset($income_data[$day])?$income_data[$day]:0);
             }
