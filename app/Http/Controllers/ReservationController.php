@@ -40,49 +40,56 @@ class ReservationController extends Controller
     public function advance($id, Request $request)
     {
         if ($request->isMethod('post')) {
-            if($request->checkmyform == 'mypayment') {
+          $reservation = Reservation::find($request->id);
+          if (!isset($request->checkin)) {
+            $request->checkin = $reservation->checkin;
+          }
+          if (!isset($request->checkout)) {
+            $request->checkout = $reservation->checkout;
+          }
+          if ($request->checkmyform == 'mypayment') {
             ReservationAdvance::insert(['paid' =>$request->paid, 'reservation_id'=>$id,'mode_of_payment'=>$request->mode_of_payment, 'category'=>$request->category, 'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>date('Y-m-d', strtotime($request->updated_at))]);
             Session::flash('alert-info', 'info');
-            } else {
-                $this->validate($request, [
-                    'checkout' => 'required',
-                    'total_price' => 'required',
-                ]);
-               
-                if (Customer::where('phone', '=', $request->phone)->exists()) {
-                    $mycustomer = Customer::where('phone', $request->phone)->first();
-                    $customer_id = $mycustomer->id;
-                } else {
-                    $name = "blankimg.png";
-                    if(isset($request->image) && !empty($request->image)) {
-                        $file = Input::file('image');
-                        $timestamp = str_replace([' ', ':'], '-', Carbon::now()->toDateTimeString());
-                        $name = $timestamp. '-' .$file->getClientOriginalName();
-                        $file->move(public_path().'/images/customers/', $name);
-                    }
-                    $customer_id = Customer::insertGetId(['first_name' => $request->first_name, 'last_name' => $request->last_name, 'phone' => $request->phone, 'email' => $request->email, 'image'=> $name, 'address'=> $request->address ]);
-                }
-                Reservation::where('id',$request->id)->update(array(
-                    'total_price' => $request->total_price, 'advance' =>$request->advance, 'booked_rooms' => $request->booked_rooms, 'checkin' => date('Y-m-d', strtotime($request->checkin)), 'checkout' => date('Y-m-d', strtotime($request->checkout)), 'customer_id' => $customer_id, 'reference' => $request->reference
-                ));
+          } else {
+              $this->validate($request, [
+                  'checkout' => 'required',
+                  'total_price' => 'required',
+              ]);
+             
+              if (Customer::where('phone', '=', $request->phone)->exists()) {
+                  $mycustomer = Customer::where('phone', $request->phone)->first();
+                  $customer_id = $mycustomer->id;
+              } else {
+                  $name = "blankimg.png";
+                  if(isset($request->image) && !empty($request->image)) {
+                      $file = Input::file('image');
+                      $timestamp = str_replace([' ', ':'], '-', Carbon::now()->toDateTimeString());
+                      $name = $timestamp. '-' .$file->getClientOriginalName();
+                      $file->move(public_path().'/images/customers/', $name);
+                  }
+                  $customer_id = Customer::insertGetId(['first_name' => $request->first_name, 'last_name' => $request->last_name, 'phone' => $request->phone, 'email' => $request->email, 'image'=> $name, 'address'=> $request->address ]);
+              }
+              Reservation::where('id',$request->id)->update(array(
+                  'total_price' => $request->total_price, 'advance' =>$request->advance, 'booked_rooms' => $request->booked_rooms, 'checkin' => date('Y-m-d', strtotime($request->checkin)), 'checkout' => date('Y-m-d', strtotime($request->checkout)), 'customer_id' => $customer_id, 'reference' => $request->reference
+              ));
 
-                $dateDiff = abs(strtotime($request->checkout."-1 days") - strtotime($request->checkin));
-                $number_of_reserved_days = $dateDiff/86400;
-                ReservationNight::where('reservation_id',$request->id)->delete();
-                for($i=0; $i<=$number_of_reserved_days; $i++) {
-                    ReservationNight::insert(['day' => date('Y-m-d', strtotime($request->checkin."+ $i days")), 'booked_rooms' => $request->booked_rooms, 'reservation_id'=>$request->id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>Carbon::now()->toDateTimeString()]);
-                }
-                if ($request->has('advance')) {
-                    ReservationAdvance::where('reservation_id',$request->id)->delete();
-                    if($request->advance > 0) {
-                        ReservationAdvance::insert(['paid' =>$request->advance, 'reservation_id'=>$request->id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>Carbon::now()->toDateTimeString()]);
-                    }
-                }
-                Session::flash('alert-success', 'success');
-            }
+              $dateDiff = abs(strtotime($request->checkout."-1 days") - strtotime($request->checkin));
+              $number_of_reserved_days = $dateDiff/86400;
+              ReservationNight::where('reservation_id',$request->id)->delete();
+              for($i=0; $i<=$number_of_reserved_days; $i++) {
+                  ReservationNight::insert(['day' => date('Y-m-d', strtotime($request->checkin."+ $i days")), 'booked_rooms' => $request->booked_rooms, 'reservation_id'=>$request->id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>Carbon::now()->toDateTimeString()]);
+              }
+              if ($request->has('advance')) {
+                  ReservationAdvance::where('reservation_id',$request->id)->delete();
+                  if($request->advance > 0) {
+                      ReservationAdvance::insert(['paid' =>$request->advance, 'reservation_id'=>$request->id,'created_at'=>Carbon::now()->toDateTimeString(), 'updated_at'=>Carbon::now()->toDateTimeString()]);
+                  }
+              }
+              Session::flash('alert-success', 'success');
+          }
         }
         $reservation = Reservation::find($request->id);
-		$reservation_advances = ReservationAdvance::where('reservation_id',$id)->get();
+        $reservation_advances = ReservationAdvance::where('reservation_id',$id)->get();
         $total_paid = ReservationAdvance::where('reservation_id',$id)->sum('paid');
         $total_available_rooms = Room::where('is_disabled', 0)->get();
         $minDateTo = date('Y-m-d', strtotime($reservation->checkin . ' +1 day'));

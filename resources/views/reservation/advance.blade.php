@@ -383,7 +383,7 @@
             }
             
             $('#datetimepicker1').datetimepicker({format: 'DD-MM-YYYY' });
-            $('#datetimepicker2').datetimepicker({format: 'DD-MM-YYYY',minDate:new  Date('{{date("Y-m-d 00:00:00", strtotime($minDateTo ))}}')});
+            $('#datetimepicker2').datetimepicker({date: new Date('{{date("Y-m-d 00:00:00", strtotime($reservation->checkout))}}'), format: 'DD-MM-YYYY',minDate:new  Date('{{date("Y-m-d 00:00:00", strtotime($minDateTo))}}')});
 
             $("#datetimepicker1").on("dp.change", function (e) {
                 var newdate = new Date(e.date);
