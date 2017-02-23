@@ -25,7 +25,7 @@ class IncomeController extends Controller
      * 
      * @var income category
      */
-    protected $income_category = array('Tea/coffee' => 'Tea/coffee', 'Cooldrinks/Water' => 'Cooldrinks/Water', 'OwnerIncome'=>'OwnerIncome', 'OtherIncome'=>'OtherIncome');
+    protected $income_category = array('Tea/coffee' => 'Tea/coffee', 'Cooldrinks/Water' => 'Cooldrinks/Water', 'ExtraBed'=>'ExtraBed','OwnerIncome'=>'OwnerIncome', 'OtherIncome'=>'OtherIncome');
     
     /**
      * Create a new controller instance.

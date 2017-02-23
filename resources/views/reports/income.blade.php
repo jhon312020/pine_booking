@@ -104,6 +104,7 @@
             $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
             var table = $('#income_table').DataTable( {
                 dom: 'Bfrtip',
+								aaSorting : [[0, 'desc']],
                 buttons: [
                      {
                         extend: 'print',

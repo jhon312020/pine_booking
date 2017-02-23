@@ -463,6 +463,7 @@ class ExpenseController extends Controller
         ->mergeBindings($subQry->getQuery())
         ->select(DB::raw('sum(sub.amount) as income_amount'), DB::raw('sum(sub.expense_amount) as expense_amount'), 'sub.report_date')
         ->groupby('report_date')
+				->orderBy('report_date', 'desc')
         ->get();    
 
         //$incomes = $incomes_qry->get();
