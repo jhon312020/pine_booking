@@ -39,11 +39,13 @@
                         </div>
                     </form>
                 </div>
+                @if(Auth::User()->role == 'admin')
                 <div class="col-lg-12">
                     <h4 class="text-center text-primary"> Overall incomes from {{$from_date}} to {{$to_date}} - Rs. {{ number_format($total_income,2) }} </h4>
                     <h4 class="text-center text-primary"> Overall expenses from {{$from_date}} to {{$to_date}}  - Rs. {{ number_format($total_expenses,2) }} </h4>
                     
                 </div>
+                @endif
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
@@ -125,7 +127,8 @@
                         }
                     },
                     'colvis'
-                ]
+                ],
+
             });
         
             var old_date = '';

@@ -110,7 +110,7 @@
     <div class="row">
             <div class="col-lg-12">
                 <div class="alert alert-info text-center">
-                    <h4>Total Expenses: <strong><i class="fa fa-inr"></i> {{ $total_expenses }}</strong></h4>
+                    <h4>Total Expenses: <strong><i class="fa fa-inr"></i> <span id="jsTotal">{{ $total_expenses }}</span></strong></h4>
                 </div>
             </div>
         </div>
@@ -125,6 +125,7 @@
     @parent
     <script src="{{asset('datepicker/moment-with-locales.js')}}"></script>
     <script src="{{asset('datepicker/datetimepicker.js')}}"></script>
+		<script src="{{asset('datatables/js/dataTable.sum.js')}}"></script>
     <script src="{{asset('datatables/js/jquery.dataTables.js')}}"></script>
     <script src="{{asset('datatables/js/dataTables.buttons.min.js')}}"></script>
     <script src="{{asset('datatables/js/buttons.flash.min.js')}}"></script>
@@ -159,7 +160,13 @@
                         }
                     },
                     'colvis'
-                ]
+                ],
+									drawCallback: function () {
+										var api = this.api();
+										var sum = api.column( 3, { filter : 'applied' } ).data().sum();
+										//console.log(sum);
+										$('#jsTotal').text(sum);
+									}
             });
         });
         $('button[name="delete"]').on('click', function(e){

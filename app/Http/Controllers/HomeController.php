@@ -6,6 +6,7 @@ use App\Expense;
 use App\Room;
 use App\Income;
 use App\Reservation;
+use App\EmployeePayment;
 use App\ReservationAdvance;
 use App\ReservationNight;
 use Illuminate\Http\Request;
@@ -141,6 +142,13 @@ class HomeController extends Controller
         //~ print_r($orderbydate);
         //~ echo '</pre>';
         $expenses_grap_data = json_encode($expenses_data_for_month);
+				
+				$total_income_amount = Income::select(DB::raw('sum(amount) as amount'))->first()->toArray()['amount'] + ReservationAdvance::select(DB::raw('sum(paid) as amount'))->first()->toArray()['amount'];
+							
+				$total_expense_amount = Expense::select(DB::raw('sum(amount) as expense_amount'))->first()->toArray()['expense_amount'] + EmployeePayment::select(DB::raw('sum(amount) as expense_amount'))->first()->toArray()['expense_amount'];
+        
+				$cash_in_hand = $total_income_amount - $total_expense_amount;
+				
         return view('home', [
             'expenses_grap_data' => $expenses_grap_data,
             'total_expense_of_month' => $total_expense_of_month,
@@ -153,6 +161,7 @@ class HomeController extends Controller
             'orderbydate' => $orderbydate,
             'expense_count' => $expense_count,
             'income_count' => $income_count,
+						'cash_in_hand' => $cash_in_hand,
             'role'=>$this->role
         ]);
     }

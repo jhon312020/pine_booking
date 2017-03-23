@@ -144,7 +144,7 @@
                         </a>
                     </div>
                 </div>
-				<div class="col-lg-3 col-md-6">
+								<div class="col-lg-3 col-md-6">
                     <div class="panel panel-primary">
                         <div class="panel-heading">
                             <div class="row">
@@ -166,29 +166,54 @@
                         </a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-rupee fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">{{ $total_expense_of_month }}</div>
-                                    <div>Total expenes</div>
-                                </div>
-                            </div>
-                        </div>
-                         <a href="javascript:void(0);" class="datailHref" data-action="{{URL::to('expense/list')}}">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>           
+                           
             </div>
+						<div class="row">
+							<div class="col-lg-3 col-md-6">
+								<div class="panel panel-green">
+										<div class="panel-heading">
+												<div class="row">
+														<div class="col-xs-3">
+																<i class="fa fa-rupee fa-5x"></i>
+														</div>
+														<div class="col-xs-9 text-right">
+																<div class="huge">{{ $total_expense_of_month }}</div>
+																<div>Total expenes</div>
+														</div>
+												</div>
+										</div>
+										 <a href="javascript:void(0);" class="datailHref" data-action="{{URL::to('expense/list')}}">
+												<div class="panel-footer">
+														<span class="pull-left">View Details</span>
+														<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+														<div class="clearfix"></div>
+												</div>
+										</a>
+								</div>
+							</div>
+							<div class="col-lg-3 col-md-6">
+								<div class="panel panel-green">
+										<div class="panel-heading">
+												<div class="row">
+														<div class="col-xs-3">
+																<i class="fa fa-rupee fa-5x"></i>
+														</div>
+														<div class="col-xs-9 text-right">
+																<div class="huge">{{ $cash_in_hand }}</div>
+																<div>Cash in hand</div>
+														</div>
+												</div>
+										</div>
+										 <a href="javascript:void(0);" class="">
+												<div class="panel-footer">
+														<span class="pull-left">View Details</span>
+														<span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+														<div class="clearfix"></div>
+												</div>
+										</a>
+								</div>
+							</div>
+						</div>
             @if($role == 'admin')
             <div class="row">
                <!-- <div class="col-lg-12">
