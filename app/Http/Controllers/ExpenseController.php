@@ -11,6 +11,7 @@ use App\Income;
 use App\ReservationAdvance;
 use App\EmployeePayment;
 use DB;
+use Auth;
 use App\Http\Controllers\Controller;
 use App\Repositories\ExpenseRepository;
 use App\Repositories\IncomeRepository;
@@ -72,12 +73,26 @@ class ExpenseController extends Controller
      */
     public function index(Request $request, Expense $expense)
     {
-        if ($request->isMethod('post')) {
-            $expense_date_from = date('Y-m-d', strtotime($request->from_date));
-            $expense_date_to = date('Y-m-d', strtotime($request->to_date));
+        if(Auth::User()->role == 'admin') {
+          $expense_date_from = Date('Y-m-01');
         } else {
-            $expense_date_from = $expense_date_to = date('Y-m-d');
+          $expense_date_from = Date('Y-m-d', strtotime("-5 days"));
         }
+          
+        $expense_date_to = Date('Y-m-d');
+
+        if ($request->isMethod('post')) {
+            if(Auth::User()->role == 'admin') {
+              $expense_date_from = date('Y-m-d', strtotime($request->from_date));
+            } else {
+              $post_from_date = Date('Y-m-d', strtotime($request->from_date));
+              
+              if($post_from_date > $expense_date_from) {
+                $expense_date_from = $post_from_date;
+              }
+            }
+            $expense_date_to = date('Y-m-d', strtotime($request->to_date));
+        } 
         $expense_object = $this->expenses->allExpenses($expense, $expense_date_from, $expense_date_to);
         //Works only with php 5.5 above
         $total_expenses = array_sum(array_column($expense_object->toArray(), 'amount'));
@@ -437,12 +452,25 @@ class ExpenseController extends Controller
      * @return void
      */
     public function income(Request $request, Expense $expense) {
-        $from_date = Date('Y-m-01', strtotime(Date('Y-m-d')));
-        $to_date = Date('Y-m-d');
-        
-        if($request->isMethod('post')) {
-            $from_date = Date('Y-m-d', strtotime($request->from_date));
-            $to_date = Date('Y-m-d', strtotime($request->to_date));
+        if(Auth::User()->role == 'admin') {
+                $from_date = Date('Y-m-01');
+            } else {
+                $from_date = Date('Y-m-d', strtotime("-5 days"));
+            }
+                
+      $to_date = Date('Y-m-d');
+        //echo $from_date;die;
+        if ($request->isMethod('post')) {
+            if(Auth::User()->role == 'admin') {
+                $from_date = date('Y-m-d', strtotime($request->from_date));
+            } else {
+                $post_from_date = Date('Y-m-d', strtotime($request->from_date));
+                
+                if($post_from_date > $from_date) {
+                    $from_date = $post_from_date;
+                }
+            }
+          $to_date = date('Y-m-d', strtotime($request->to_date));
         }
         
           

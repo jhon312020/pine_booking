@@ -102,8 +102,18 @@
     <script src="{{asset('datatables/js/buttons.print.min.js')}}"></script>
     <script src="{{asset('datatables/js/buttons.colVis.min.js')}}"></script>
     <script type="text/javascript">
-        
-            $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
+            <?php if(Auth::User()->role == 'admin') { ?>
+              $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
+            <?php } else { ?>
+              var end_date = "<?php echo date('m/d/Y'); ?>";
+              var start_date = "<?php echo date('m/d/Y', strtotime('-5 days')); ?>";
+              $('.datetimepicker').datetimepicker({
+                            format: 'DD-MM-YYYY',
+                            minDate : moment(start_date),
+                            maxDate : moment(end_date),
+                          });
+            <?php } ?>
+            
             var table = $('#income_table').DataTable( {
                 dom: 'Bfrtip',
 								aaSorting : [[0, 'desc']],
