@@ -6,6 +6,21 @@
         background-color: #eee;
     }
 </style>
+
+<div height="35" tabindex="-1" class="react-grid-Cell react-grid-Cell--locked" style="position:absolute;width:60px;height:35px;left:0;contain:layout;">
+	<div class="react-grid-Cell__value">
+		<span>
+			<div class="react-grid-checkbox-container">
+				<input class="react-grid-checkbox" type="checkbox" name="checkbox0">
+				<label for="checkbox0" class="react-grid-checkbox-label"></label>
+			</div>
+		</span>
+		<span> </span>
+		<span> </span>
+	</div>
+</div>
+
+
 <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-12 page-header" style="margin-top:20px;">

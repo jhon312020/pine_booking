@@ -121,11 +121,25 @@ class IncomeController extends Controller
      */
     public function listing(Request $request, income $income)
     {
-    $from_date = Date('Y-m-01');
+			if(Auth::User()->role == 'admin') {
+				$from_date = Date('Y-m-01');
+			} else {
+				$from_date = Date('Y-m-d', strtotime("-5 days"));
+			}
+				
     $to_date = Date('Y-m-d');
+		//echo $from_date;die;
         if ($request->isMethod('post')) {
-            $from_date = date('Y-m-d', strtotime($request->from_date));
-            $to_date = date('Y-m-d', strtotime($request->to_date));
+					if(Auth::User()->role == 'admin') {
+						$from_date = date('Y-m-d', strtotime($request->from_date));
+					} else {
+						$post_from_date = Date('Y-m-d', strtotime($request->from_date));
+						
+						if($post_from_date > $from_date) {
+							$from_date = $post_from_date;
+						}
+					}
+          $to_date = date('Y-m-d', strtotime($request->to_date));
         }
     $first_qry = Income::select(DB::raw('"income" as category'), 'name as mode_of_payment', 'amount as paid', DB::raw('DATE(date_of_income) as updated_at'))
               ->whereRaw('DATE(date_of_income) >= "'.$from_date.'"')

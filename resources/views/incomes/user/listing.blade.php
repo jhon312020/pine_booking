@@ -136,7 +136,14 @@
     <script src="{{asset('datatables/js/buttons.colVis.min.js')}}"></script>
     <script type="text/javascript">
         $(function () {
-            $('.datetimepicker').datetimepicker({format: 'DD-MM-YYYY'});
+					var end_date = "<?php echo date('m/d/Y'); ?>";
+					var start_date = "<?php echo date('m/d/Y', strtotime('-5 days')); ?>";
+					//console.log(start_date, end_date)
+            $('.datetimepicker').datetimepicker({
+								format: 'DD-MM-YYYY',
+								minDate : moment(start_date),
+								maxDate : moment(end_date),
+						});
             $('#expense_table').DataTable( {
                 dom: 'Bfrtip',
                 buttons: [
